@@ -22,8 +22,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String homeAction(Model model){
-        List<Institution> institutions = institutionRepository.findAll();
-        model.addAttribute("institutions",institutions);
+        model.addAttribute("institutions",institutionRepository.findAll());
         model.addAttribute("quantityBag",donationRepository.allQuantityBag());
         model.addAttribute("allDonations",donationRepository.allDonations());
         return "home/main";
