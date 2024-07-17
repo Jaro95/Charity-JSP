@@ -64,13 +64,15 @@ public class AdminService {
 
     public void createBasicAdmin() {
         if (userRepository.findAll().isEmpty()) {
-            Role userRole = roleRepository.findByName("ROLE_SUPER_ADMIN");
+            Role roleSuperAdmin = roleRepository.findByName("ROLE_SUPER_ADMIN");
+            Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            Role roleUser = roleRepository.findByName("ROLE_USER");
             List<User> userList = List.of(
                     User.builder()
                             .email("superAdmin@admin")
                             .name("Jarek")
                             .lastName("Marciniak")
-                            .roles(new HashSet<>(Arrays.asList(userRole)))
+                            .roles(new HashSet<>(Arrays.asList(roleSuperAdmin,roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
                             .build(),
@@ -78,7 +80,7 @@ public class AdminService {
                             .email("admin@admin")
                             .name("Krzysztof")
                             .lastName("Wysocki")
-                            .roles(new HashSet<>(Arrays.asList(userRole)))
+                            .roles(new HashSet<>(Arrays.asList(roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
                             .build());
