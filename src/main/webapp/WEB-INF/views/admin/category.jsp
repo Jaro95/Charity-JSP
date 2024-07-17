@@ -19,7 +19,7 @@
     </c:if>
 
     <p class="w3-center w3-jumbo cantact-info"><button class="w3-button w3-black"
-            onclick="location.href='/charity/admin/categoryAdd'">
+            onclick="location.href='/charity/admin/category/add'">
         <i class="fa fa-pencil"></i> Add new category</button>
     </p>
     <table id="adminTable" class="display">
@@ -34,8 +34,6 @@
         <c:forEach items="${categoryList}" var="institution" varStatus="status">
             <tr>
                 <c:if test="${not empty updateId && institution.id eq updateId}">
-
-                <td>${status.count}</td>
                 <form method="post">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input name="categoryId" type="hidden" value="${institution.id}">
@@ -59,7 +57,7 @@
                         </button>
                         <sec:authorize access="hasRole('SUPER_ADMIN')">
                             <a class="w3-button w3-black" id ="delete-category"
-                               href="${pageContext.request.contextPath}/charity/admin/categoryDelete?deleteId=${institution.id}">
+                               href="${pageContext.request.contextPath}/charity/admin/category/delete?deleteId=${institution.id}">
                                 <i class="fa fa-trash"></i>Usuń</a>
                         </sec:authorize>
                     </td>

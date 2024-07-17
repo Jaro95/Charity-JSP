@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.coderslab.charity.model.Category;
 import pl.coderslab.charity.model.Institution;
 import pl.coderslab.charity.model.User;
 import pl.coderslab.charity.repository.CategoryRepository;
@@ -46,9 +47,50 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String getCategory(Model model) {
+    public String getCategory(@RequestParam(required = false) Long updateId, Model model) {
+        if (updateId != null) {
+            model.addAttribute("updateId", updateId);
+        }
         model.addAttribute("categoryList",categoryRepository.findAll());
         return "admin/category";
+    }
+
+    @PostMapping("/category")
+    public String postCategory(@RequestParam Long categoryId, @RequestParam String categoryName,
+                               RedirectAttributes redirectAttributes) {
+        Category category = categoryRepository.findById(categoryId).get();
+        category.setName(categoryName);
+        categoryRepository.save(category);
+
+        redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyślnie");
+        return "redirect:/charity/admin/category";
+    }
+
+    @GetMapping("/category/add")
+    public String getAddCategory(Model model) {
+        model.addAttribute("category",new Category());
+        return "admin/addCategory";
+    }
+
+    @PostMapping("/category/add")
+    public String postAddCategory(@Valid Category category, Model model,
+                                  BindingResult result, RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            model.addAttribute("category",category);
+            model.addAttribute("errors",result.getAllErrors());
+            model.addAttribute("messageError","Napotkano błędy w formularzu");
+            return "admin/addCategory";
+        }
+        categoryRepository.save(category);
+        redirectAttributes.addFlashAttribute("message", "Kategoria dodana pomyślnie");
+        return "redirect:/charity/admin/category/add";
+    }
+
+    @GetMapping("/category/delete")
+    public String getDeleteCategory(@RequestParam Long deleteId,RedirectAttributes redirectAttributes) {
+        categoryRepository.deleteById(deleteId);
+        redirectAttributes.addFlashAttribute("message", "Kategoria usunięta pomyślnie");
+        return "redirect:/charity/admin/category";
     }
 
     @GetMapping("/donation")
@@ -100,7 +142,7 @@ public class AdminController {
     }
 
     @GetMapping("/institution/delete")
-    public String getAddInstitution(@RequestParam Long deleteId,RedirectAttributes redirectAttributes) {
+    public String getDeleteInstitution(@RequestParam Long deleteId,RedirectAttributes redirectAttributes) {
         institutionRepository.deleteById(deleteId);
         redirectAttributes.addFlashAttribute("message", "Fundacja usunięta pomyślnie");
         return "redirect:/charity/admin/institution";

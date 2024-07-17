@@ -34,8 +34,7 @@
         <tbody>
         <c:forEach items="${institutionList}" var="institution" varStatus="status">
             <tr>
-                <c:if test="${not empty updateId}">
-                <c:if test="${institution.id eq updateId}">
+                <c:if test="${not empty updateId && institution.id eq updateId}">
                 <form method="post">
                     <input name="institutionId" type="hidden" value="${institution.id}">
                     <td>${status.count}</td>
@@ -48,7 +47,6 @@
                         </button>
                     </td>
                 </form>
-                    </c:if>
                     </c:if>
                     <c:if test="${empty updateId}">
                     <td>${status.count}</td>
