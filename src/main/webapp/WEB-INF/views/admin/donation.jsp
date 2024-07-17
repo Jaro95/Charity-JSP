@@ -55,7 +55,7 @@
                         <i class="fa fa-pencil"></i> Edytuj
                     </button>
                     <sec:authorize access="hasRole('SUPER_ADMIN')">
-                        <a class="w3-button w3-black" id="confirm-delete-user"
+                        <a class="w3-button w3-black" id="delete-donation"
                            href="${pageContext.request.contextPath}/charity/admin/donation/delete?id=${donation.id}">
                             <i class="fa fa-trash"></i>Usuń</a>
                     </sec:authorize>

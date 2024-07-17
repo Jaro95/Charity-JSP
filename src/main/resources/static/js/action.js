@@ -18,12 +18,30 @@ function w3_close() {
 }
 
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#delete-category').forEach(link => {
         link.addEventListener('click', event => {
             if (!confirm('Czy na pewno chcesz usunąć kategorię?')) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('#delete-donation').forEach(link => {
+        link.addEventListener('click', event => {
+            if (!confirm('Czy na pewno chcesz usunąć dar?')) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('#delete-institution').forEach(link => {
+        link.addEventListener('click', event => {
+            if (!confirm('Czy na pewno chcesz usunąć fundacje?')) {
                 event.preventDefault();
             }
         });

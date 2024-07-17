@@ -19,8 +19,8 @@
     </c:if>
 
     <p class="w3-center w3-jumbo cantact-info"><button class="w3-button w3-black"
-            onclick="location.href='/gowithme/admin/categoryAdd'">
-        <i class="fa fa-pencil"></i> Add new category</button>
+            onclick="location.href='/charity/admin/institution/add'">
+        <i class="fa fa-pencil"></i> Add new institution</button>
     </p>
     <table id="adminTable" class="display">
         <thead>
@@ -34,21 +34,21 @@
         <tbody>
         <c:forEach items="${institutionList}" var="institution" varStatus="status">
             <tr>
-                <c:if test="${not empty updateId && institution.id eq updateId}">
-
-                <td>${status.count}</td>
+                <c:if test="${not empty updateId}">
+                <c:if test="${institution.id eq updateId}">
                 <form method="post">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input name="institutionId" type="hidden" value="${institution.id}">
                     <td>${status.count}</td>
                     <td><input name="institutionName" type="text" value="${institution.name}"></td>
-                    <td><input name="institutionDescription" type="text" value="${institution.description}"></td>
+                    <td><textarea name="institutionDescription" type="text">${institution.description}</textarea></td>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <td>
                         <button class="w3-button w3-black" type="submit">
                             <i class="fa fa-save"></i> Zapisz
                         </button>
                     </td>
                 </form>
+                    </c:if>
                     </c:if>
                     <c:if test="${empty updateId}">
                     <td>${status.count}</td>
@@ -61,8 +61,8 @@
                             <i class="fa fa-pencil"></i> Edytuj
                         </button>
                         <sec:authorize access="hasRole('SUPER_ADMIN')">
-                            <a class="w3-button w3-black" id ="delete-category"
-                               href="${pageContext.request.contextPath}/charity/admin/institutionDelete?deleteId=${institution.id}">
+                            <a class="w3-button w3-black" id ="delete-institution"
+                               href="${pageContext.request.contextPath}/charity/admin/institution/delete?deleteId=${institution.id}">
                                 <i class="fa fa-trash"></i>Usuń</a>
                         </sec:authorize>
                     </td>
