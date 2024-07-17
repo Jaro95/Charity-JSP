@@ -35,11 +35,11 @@
         </ul>
 
         <ul>
-            <li><a href="/donation#step" class="btn btn--without-border active">Start</a></li>
-            <li><a href="/donation#donation" class="btn btn--without-border">Przekaż dary</a></li>
-            <li><a href="/donation#about-us" class="btn btn--without-border">O nas</a></li>
-            <li><a href="/donation#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
-            <li><a href="/donation#contact" class="btn btn--without-border">Kontakt</a></li>
+            <li><a href="/charity/donation#step" class="btn btn--without-border active">Start</a></li>
+            <li><a href="/charity/donation#donation" class="btn btn--without-border">Przekaż dary</a></li>
+            <li><a href="/charity/donation#about-us" class="btn btn--without-border">O nas</a></li>
+            <li><a href="/charity/donation#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
+            <li><a href="/charity/donation#contact" class="btn btn--without-border">Kontakt</a></li>
         </ul>
     </nav>
 

@@ -13,6 +13,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -23,23 +24,24 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/**").permitAll()
-                        .requestMatchers("/admin/create-start").permitAll()
-                        //.requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
-                       .requestMatchers("/donation/**").hasRole("USER")
+//                        .requestMatchers("/charity","/charity/login","/charity/registration").permitAll()
+//                        .requestMatchers("charity/admin/create-start").permitAll()
+//                        .requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
+//                       .requestMatchers("/charity/donation/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/charity/login")
                         .failureHandler(customAuthenticationFailureHandler())
-                        .defaultSuccessUrl("/donation", true)
+                        .defaultSuccessUrl("/charity/donation", true)
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/donation/logout")
+                        .logoutUrl("/charity/donation/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/donation/logout", "GET"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/charity/donation/logout", "GET"))
                 );
 //                .exceptionHandling(exceptionHandling -> exceptionHandling
 //                        .accessDeniedPage("/login")
@@ -51,7 +53,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
         return (request, response, exception) -> {
-            response.sendRedirect("/login?error=true");
+            response.sendRedirect("/charity/login?error=true");
         };
     }
 }

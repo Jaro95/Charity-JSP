@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.dto.RegistrationDTO;
@@ -18,13 +19,14 @@ import pl.coderslab.charity.service.UserService;
 @Controller
 @AllArgsConstructor
 @Slf4j
+@RequestMapping("/charity")
 public class HomeController {
 
     private final InstitutionRepository institutionRepository;
     private final DonationRepository donationRepository;
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public String homeAction(Model model) {
         model.addAttribute("institutions", institutionRepository.findAll());
         model.addAttribute("quantityBag", donationRepository.allQuantityBag());

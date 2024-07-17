@@ -16,7 +16,7 @@ import pl.coderslab.charity.repository.DonationRepository;
 import pl.coderslab.charity.repository.InstitutionRepository;
 
 @Controller
-@RequestMapping("/donation")
+@RequestMapping("/charity/donation")
 @AllArgsConstructor
 @Slf4j
 public class DonationController {
