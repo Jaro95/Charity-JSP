@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**").permitAll()
+                       // .requestMatchers("/**").permitAll()
                         .requestMatchers("/admin/create-start").permitAll()
                         .requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
                         .anyRequest().authenticated()
