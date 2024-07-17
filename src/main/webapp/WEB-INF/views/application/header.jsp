@@ -5,6 +5,7 @@
   Time: 11:54
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="pl">
@@ -22,7 +23,9 @@
     <nav class="container container--70">
         <ul class="nav--actions">
             <li class="logged-user">
-                Witaj Agata
+                <sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal.user.name"/>
+                </sec:authorize>
                 <ul class="dropdown">
                     <li><a href="#">Profil</a></li>
                     <li><a href="#">Moje zbiórki</a></li>
@@ -32,11 +35,11 @@
         </ul>
 
         <ul>
-            <li><a href="#step" class="btn btn--without-border active">Start</a></li>
-            <li><a href="#donation" class="btn btn--without-border">Przekaż darowizne</a></li>
-            <li><a href="#about-us" class="btn btn--without-border">O nas</a></li>
-            <li><a href="#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
-            <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
+            <li><a href="/charity/donation#step" class="btn btn--without-border active">Start</a></li>
+            <li><a href="/charity/donation#donation" class="btn btn--without-border">Przekaż dary</a></li>
+            <li><a href="/charity/donation#about-us" class="btn btn--without-border">O nas</a></li>
+            <li><a href="/charity/donation#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
+            <li><a href="/charity/donation#contact" class="btn btn--without-border">Kontakt</a></li>
         </ul>
     </nav>
 
