@@ -56,7 +56,7 @@ public class HomeController {
         }
         userService.saveUser(registrationDTO);
         redirectAttributes.addFlashAttribute("message", "Rejestracja przebiegła pomyślnie");
-        return "redirect:/login";
+        return "redirect:/charity/login";
     }
 }
 

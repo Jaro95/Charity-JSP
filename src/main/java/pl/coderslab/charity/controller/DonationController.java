@@ -46,6 +46,6 @@ public class DonationController {
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("donationSuccessFull", "completed");
         log.info("Added donation {}", donation.toString());
-        return "redirect:/donation";
+        return "redirect:/charity/donation";
     }
 }
