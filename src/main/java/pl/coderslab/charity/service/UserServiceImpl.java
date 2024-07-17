@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
                 .roles(new HashSet<>(Arrays.asList(userRole)))
                 .password(passwordEncoder.encode(user.getPassword()))
                 .createdAccount(LocalDateTime.now())
+                .enabled(false)
                 .build());
     }
 

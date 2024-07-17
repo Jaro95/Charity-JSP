@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -20,11 +21,27 @@
 <body>
 <header class="header--main-page">
     <nav class="container container--70">
+        <sec:authorize access="isAnonymous()">
         <ul class="nav--actions">
             <li><a href="/charity/login" class="btn btn--small btn--without-border">Zaloguj</a></li>
             <li><a href="/charity/registration" class="btn btn--small btn--highlighted">Załóż konto</a></li>
         </ul>
-
+        </sec:authorize>
+        <sec:authorize access="isAuthenticated()">
+        <ul class="nav--actions">
+            <li class="logged-user">
+                <sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal.user.name"/>
+                </sec:authorize>
+                <ul class="dropdown">
+                    <li><a href="/charity/donation">Aplikacja</a></li>
+                    <li><a href="#">Profil</a></li>
+                    <li><a href="#">Moje zbiórki</a></li>
+                    <li><a href="#">Wyloguj</a></li>
+                </ul>
+            </li>
+        </ul>
+        </sec:authorize>
         <ul>
             <li><a href="/charity#stats" class="btn btn--without-border active">Start</a></li>
             <li><a href="/charity#steps" class="btn btn--without-border">O co chodzi?</a></li>

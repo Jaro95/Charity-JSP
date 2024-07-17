@@ -23,12 +23,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/charity","/charity/login","/charity/registration").permitAll()
+                                .requestMatchers("/**").permitAll()
+                                //           .requestMatchers("/charity","/charity/login","/charity/registration").permitAll()
 //                        .requestMatchers("charity/admin/create-start").permitAll()
 //                        .requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
 //                       .requestMatchers("/charity/donation/**").hasRole("USER")
-                        .anyRequest().authenticated()
+//                       .requestMatchers("/charity/admin/**").hasAnyRole("ADMIN","SUPER_ADMIN")
+                                .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/charity/login")
@@ -37,7 +38,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/charity/donation/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/charity")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()

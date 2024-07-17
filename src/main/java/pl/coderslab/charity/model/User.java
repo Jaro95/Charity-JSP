@@ -30,8 +30,8 @@ public class User {
     @Size(max = 30)
     private String lastName;
     @NotBlank
-
     private String password;
+    private boolean enabled;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles;
     private LocalDateTime createdAccount;

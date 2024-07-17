@@ -83,13 +83,13 @@
             <div data-step="1" class="" id="categoriesChoose">
                 <h3>Zaznacz co chcesz oddać:</h3>
 
-                <c:forEach items="${categories}" var="category">
+                <c:forEach items="${categories}" var="institution">
                     <div class="form-group form-group--checkboxes">
                         <label>
-                            <form:checkbox path="categories" value="${category.id}"
-                                           data-category-name="${category.name}"/>
+                            <form:checkbox path="categories" value="${institution.id}"
+                                           data-category-name="${institution.name}"/>
                             <span class="checkbox"></span>
-                            <span class="description">${category.name}</span>
+                            <span class="description">${institution.name}</span>
                         </label>
                     </div>
                 </c:forEach>
@@ -262,9 +262,9 @@
         <h2>O nas</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas vitae animi rem pariatur incidunt libero
             optio esse quisquam illo omnis.</p>
-        <img src="images/signature.svg" class="about-us--text-signature" alt="Signature">
+        <img src="/images/signature.svg" class="about-us--text-signature" alt="Signature">
     </div>
-    <div class="about-us--image"><img src="images/about-us.jpg" alt="People in circle"></div>
+    <div class="about-us--image"><img src="/images/about-us.jpg" alt="People in circle"></div>
 </section>
 
 <section id="help" class="help">
