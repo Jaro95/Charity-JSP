@@ -24,7 +24,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                        // .requestMatchers("/**").permitAll()
                         .requestMatchers("/admin/create-start").permitAll()
-                        .requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
+                        //.requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
+                       .requestMatchers("/donation/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -39,7 +40,10 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                         .logoutRequestMatcher(new AntPathRequestMatcher("/donation/logout", "GET"))
-                );
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedPage("/login")
+                );;
         //.exceptionHandling(exception -> exception.accessDeniedPage("/403"));
         return http.build();
     }
