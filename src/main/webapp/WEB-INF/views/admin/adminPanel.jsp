@@ -17,6 +17,11 @@
                 ${message}
         </div>
     </c:if>
+    <c:if test="${not empty messageError}">
+        <div class="alert alert-error">
+                ${messageError}
+        </div>
+    </c:if>
     <table id="adminTable" class="display">
         <thead>
         <tr>

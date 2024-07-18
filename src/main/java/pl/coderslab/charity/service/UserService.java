@@ -9,4 +9,6 @@ public interface UserService {
 
     Optional<User> findByEmail(String email);
     void saveUser(RegistrationDTO user);
+    void updateUser(User user, String password);
+    void updateUser(User user);
 }

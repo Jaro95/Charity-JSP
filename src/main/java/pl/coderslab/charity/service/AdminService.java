@@ -79,6 +79,7 @@ public class AdminService {
                             .roles(new HashSet<>(Arrays.asList(roleSuperAdmin,roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
+                            .enabled(true)
                             .build(),
                     User.builder()
                             .email("admin@admin")
@@ -87,6 +88,7 @@ public class AdminService {
                             .roles(new HashSet<>(Arrays.asList(roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
+                            .enabled(true)
                             .build());
             userRepository.saveAll(userList);
             log.info("Created first admin");

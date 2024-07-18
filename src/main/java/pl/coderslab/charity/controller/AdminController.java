@@ -2,6 +2,8 @@ package pl.coderslab.charity.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,11 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.model.Category;
 import pl.coderslab.charity.model.Institution;
 import pl.coderslab.charity.model.User;
-import pl.coderslab.charity.repository.CategoryRepository;
-import pl.coderslab.charity.repository.DonationRepository;
-import pl.coderslab.charity.repository.InstitutionRepository;
-import pl.coderslab.charity.repository.UserRepository;
+import pl.coderslab.charity.repository.*;
 import pl.coderslab.charity.service.AdminService;
+import pl.coderslab.charity.service.CurrentUser;
+import pl.coderslab.charity.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class AdminController {
     private final CategoryRepository categoryRepository;
     private final InstitutionRepository institutionRepository;
     private final DonationRepository donationRepository;
+    private final RoleRepository roleRepository;
+    private final UserService userService;
 
     @GetMapping("/create-start")
     public String createBasicInstitution(){
@@ -37,13 +40,63 @@ public class AdminController {
         adminService.createBasicCategory();
         adminService.createRole();
         adminService.createBasicAdmin();
-        return "redirect:/";
+        return "redirect:/charity";
     }
 
     @GetMapping("")
     public String panelAdmin(Model model) {
         model.addAttribute("userList",userRepository.findAll());
         return "admin/adminPanel";
+    }
+    @GetMapping("/user/update")
+    public String getUpdateUser(@RequestParam Long id,Model model) {
+        User user = userRepository.findById(id).get();
+        model.addAttribute("user",user);
+        model.addAttribute("userId",user.getId());
+        model.addAttribute("userEmail",user.getEmail());
+        model.addAttribute("roles",roleRepository.findAll());
+        model.addAttribute("userRole",user.getRoles());
+        model.addAttribute("userPassword",user.getPassword());
+        return "admin/updateUser";
+    }
+
+    @PostMapping("/user/update")
+    public String postUpdateUser(@Valid User user ,@RequestParam(required = false) String password,
+                                 Model model, BindingResult result,
+                                 RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            model.addAttribute("user",user);
+            model.addAttribute("userId",user.getId());
+            model.addAttribute("userEmail",user.getEmail());
+            model.addAttribute("roles",roleRepository.findAll());
+            model.addAttribute("userRole",user.getRoles());
+            model.addAttribute("userPassword",user.getPassword());
+            model.addAttribute("errors",result.getAllErrors());
+            return "admin/updateUser";
+        }
+        if (password != null) {
+            userService.updateUser(user,password);
+        } else {
+            userService.updateUser(user);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Edycja przebiedła pomyslnie");
+        return "redirect:/charity/admin";
+    }
+
+    @GetMapping("/user/delete")
+    public String getDeleteUser(@RequestParam Long id, @AuthenticationPrincipal CurrentUser currentUser,
+                                RedirectAttributes redirectAttributes) {
+        if(currentUser.getUser().getId() == id) {
+            redirectAttributes.addFlashAttribute("messageError", "Nie możesz usunąć samego siebie");
+            return "redirect:/charity/admin";
+        }
+        User user = userRepository.findById(id).get();
+        user.getRoles().clear();
+        user.getDonations().clear();
+        userRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("message", "Użytkownik usunięty pomyślnie");
+        return "redirect:/charity/admin";
     }
 
     @GetMapping("/category")

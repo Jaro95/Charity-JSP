@@ -28,6 +28,7 @@
             <th>Phone number</th>
             <th>Pick Up Date</th>
             <th>Pick Up Time</th>
+            <th>User Id</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -45,10 +46,11 @@
                     <p>${donation.institution.name}</p>
                     <p>Cel i misja: ${donation.institution.description}</p>
                 </td>
-                <td>${donation.street},${donation.zipCode} ${donation.city}</td>
+                <td>${donation.street}, ${donation.zipCode} ${donation.city}</td>
                 <td>${donation.phoneNumber}</td>
                 <td>${donation.pickUpDate}</td>
                 <td>${donation.pickUpTime}</td>
+                <td>${donation.user.id}</td>
                 <td>
                     <button class="w3-button w3-black"
                             onclick="location.href='/charity/admin/donation/update?id=${donation.id}'">

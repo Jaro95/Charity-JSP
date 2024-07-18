@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -34,5 +35,8 @@ public class User {
     private boolean enabled;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles;
+    private String token;
     private LocalDateTime createdAccount;
+    @OneToMany
+    private List<Donation> donations;
 }

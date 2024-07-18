@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -38,7 +39,20 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .createdAccount(LocalDateTime.now())
                 .enabled(false)
+                .token(UUID.randomUUID().toString())
                 .build());
     }
 
+    @Override
+    public void updateUser(User user, String password) {
+        if (!passwordEncoder.matches(user.getPassword(), password)) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
 }

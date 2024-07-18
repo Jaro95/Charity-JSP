@@ -3,6 +3,7 @@ package pl.coderslab.charity.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import pl.coderslab.charity.model.Donation;
 import pl.coderslab.charity.repository.CategoryRepository;
 import pl.coderslab.charity.repository.DonationRepository;
 import pl.coderslab.charity.repository.InstitutionRepository;
+import pl.coderslab.charity.service.CurrentUser;
 
 @Controller
 @RequestMapping("/charity/donation")
@@ -34,7 +36,8 @@ public class DonationController {
     }
 
     @PostMapping("")
-    public String postGiveDonation(@Valid Donation donation, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String postGiveDonation(@Valid Donation donation, @AuthenticationPrincipal CurrentUser currentUser,
+                                   BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
             model.addAttribute("institutions", institutionRepository.findAll());
             model.addAttribute("donation", donation);
@@ -43,9 +46,10 @@ public class DonationController {
             model.addAttribute("messageError", "Napotkano błędy w formularzu");
             return "application/main";
         }
+        donation.setUser(currentUser.getUser());
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("donationSuccessFull", "completed");
-        log.info("Added donation {}", donation.toString());
+       // log.info("Added donation {}", donation.toString());
         return "redirect:/charity/donation";
     }
 }

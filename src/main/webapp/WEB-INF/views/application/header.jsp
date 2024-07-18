@@ -13,7 +13,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Document</title>
+    <title>Charity</title>
 
     <link rel="stylesheet" href="/css/style.css"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/app.js"></script>
@@ -29,7 +29,7 @@
                 <ul class="dropdown">
                     <li><a href="#">Profil</a></li>
                     <li><a href="#">Moje zbiórki</a></li>
-                    <li><a href="#">Wyloguj</a></li>
+                    <li><a href="/charity/donation/logout">Wyloguj</a></li>
                 </ul>
             </li>
         </ul>
