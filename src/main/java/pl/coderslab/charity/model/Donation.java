@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class Donation {
     private LocalDate pickUpDate;
     @NotNull
     private LocalTime pickUpTime;
+    private boolean receive;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createdDate;
+    private LocalTime createdTime;
     @Size(max=500)
     private String pickUpComment;
     @ManyToOne

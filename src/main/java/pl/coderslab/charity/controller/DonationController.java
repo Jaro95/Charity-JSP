@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.dto.EditPassword;
 import pl.coderslab.charity.model.Donation;
@@ -20,6 +21,11 @@ import pl.coderslab.charity.repository.InstitutionRepository;
 import pl.coderslab.charity.repository.UserRepository;
 import pl.coderslab.charity.service.CurrentUser;
 import pl.coderslab.charity.service.UserService;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/charity/donation")
@@ -54,6 +60,9 @@ public class DonationController {
             return "application/main";
         }
         donation.setUser(currentUser.getUser());
+        donation.setCreatedDate(LocalDate.now());
+        donation.setCreatedTime(LocalTime.now().withSecond(0).withNano(0));
+        donation.setReceive(false);
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("donationSuccessFull", "completed");
        // log.info("Added donation {}", donation.toString());
@@ -66,7 +75,7 @@ public class DonationController {
         model.addAttribute("name", user.getName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("email", user.getEmail());
-        model.addAttribute("donation", donationRepository.allDonationsUser(user.getId()).get());
+        model.addAttribute("donation", donationRepository.countDonationsUser(user.getId()).get());
         return "application/profile";
     }
 
@@ -112,5 +121,53 @@ public class DonationController {
         userService.updateUser(currentUser.getUser(),editPassword.getPassword());
         redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyślnie");
         return "redirect:/charity/donation/profile";
+    }
+
+    @GetMapping("/userDonation")
+    public String getDonation(@AuthenticationPrincipal CurrentUser currentUser ,Model model) {
+        model.addAttribute("donationList", donationRepository.allDonationsUser(currentUser.getUser()));
+        return "application/donations";
+    }
+
+    @GetMapping("/userDonation/update")
+    public String getEditDonation(@RequestParam Long id , @AuthenticationPrincipal CurrentUser currentUser,
+                                  Model model) {
+        Optional<Donation> donation = donationRepository.donationUserUpdate(currentUser.getUser(),id);
+        if(donation.isEmpty()) {
+            model.addAttribute("donationList", donationRepository.allDonationsUser(currentUser.getUser()));
+            return "application/donations";
+        }
+        model.addAttribute("donation", donation.get());
+        model.addAttribute("institutions", institutionRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("createdDate", donation.get().getCreatedDate());
+        model.addAttribute("createdTime", donation.get().getCreatedTime());
+        return "application/updateDonation";
+    }
+
+    @PostMapping("/userDonation/update")
+    public String postEditDonation(@Valid Donation donation, @AuthenticationPrincipal CurrentUser currentUser,
+                                   BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+        if(result.hasErrors()) {
+            model.addAttribute("donation", donation);
+            model.addAttribute("institutions", institutionRepository.findAll());
+            model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("createdDate", donation.getCreatedDate());
+            model.addAttribute("createdTime", donation.getCreatedTime());
+            model.addAttribute("errors", result.getAllErrors());
+            return "application/updateDonation";
+        }
+        donation.setUser(currentUser.getUser());
+        donationRepository.save(donation);
+        redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyslnie");
+        log.info("Updated donation: {}", donation.toString());
+        return "redirect:/charity/donation/userDonation";
+    }
+
+    @GetMapping("/userDonation/delete")
+    public String getDeleteDonation(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        donationRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("message", "Dar usunięty pomyślnie");
+        return "redirect:/charity/donation/userDonation";
     }
 }

@@ -22,19 +22,19 @@
         <ul class="help--slides-items">
             <li>
                 <div class="col">
-                    <div class="title">Imię: <form:input class="input-contact edit-profile" type="text" placeholder="Name" path="name"/></div>
+                    <div class="title">Imię: <form:input class="input-contact edit-profile centre-text" type="text" placeholder="Name" path="name"/></div>
                     <p><form:errors path="name" cssClass="alert alert-error"/></p>
                 </div>
             </li>
             <li>
                 <div class="col">
-                    <div class="title">Nazwisko: <form:input class="input-contact edit-profile" type="text" placeholder="LastName" path="lastName"/></div>
+                    <div class="title">Nazwisko: <form:input class="input-contact edit-profile centre-text" type="text" placeholder="LastName" path="lastName"/></div>
                     <p><form:errors path="lastName" cssClass="alert alert-error"/></p>
                 </div>
             </li>
             <li>
                 <div class="col">
-                    <div class="title">Email: <form:input class="input-contact edit-profile" type="text" placeholder="LastName" path="email"/></div>
+                    <div class="title">Email: <form:input class="input-contact edit-profile centre-text" type="text" placeholder="LastName" path="email"/></div>
                     <p><form:errors path="email" cssClass="alert alert-error"/></p>
                 </div>
             </li>
