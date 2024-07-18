@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/charity/login")
                         .failureHandler(customAuthenticationFailureHandler())
-                        .defaultSuccessUrl("/charity/donation", true)
+                        .defaultSuccessUrl("/charity/validate", true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/charity/donation/logout")

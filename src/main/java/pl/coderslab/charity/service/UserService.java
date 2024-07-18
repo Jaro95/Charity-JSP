@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface UserService {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByToken(String token);
     void saveUser(RegistrationDTO user);
     void updateUser(User user, String password);
     void updateUser(User user);
