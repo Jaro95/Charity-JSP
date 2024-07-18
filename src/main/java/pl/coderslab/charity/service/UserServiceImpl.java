@@ -22,10 +22,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EmailService emailService;
 
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
     }
 
     @Override
@@ -41,6 +47,7 @@ public class UserServiceImpl implements UserService {
                 .enabled(false)
                 .token(UUID.randomUUID().toString())
                 .build());
+        emailService.sendVerificationEmail(user.getEmail(),userRepository.findByEmail(user.getEmail()).get().getToken());
     }
 
     @Override
