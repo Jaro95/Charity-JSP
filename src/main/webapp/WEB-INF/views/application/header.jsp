@@ -28,7 +28,7 @@
                 </sec:authorize>
                 <ul class="dropdown">
                     <li><a href="/charity/donation/profile">Profil</a></li>
-                    <li><a href="#">Moje zbiórki</a></li>
+                    <li><a href="/charity/donation/userDonation">Moje zbiórki</a></li>
                     <li><a href="/charity/donation/logout">Wyloguj</a></li>
                 </ul>
             </li>

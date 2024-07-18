@@ -22,6 +22,13 @@
             </div>
             </div>
         </c:if>
+        <c:if test="${not empty message}">
+            <div class="slogan--steps">
+                <div class="alert alert-success slogan--steps-title">
+                        ${message}
+                </div>
+            </div>
+        </c:if>
         <c:if test="${not empty donationSuccessFull}">
             <h2>
                 Dziękujemy za przesłanie formularza Na maila prześlemy wszelkie
@@ -83,13 +90,13 @@
             <div data-step="1" class="" id="categoriesChoose">
                 <h3>Zaznacz co chcesz oddać:</h3>
 
-                <c:forEach items="${categories}" var="institution">
+                <c:forEach items="${categories}" var="category">
                     <div class="form-group form-group--checkboxes">
                         <label>
-                            <form:checkbox path="categories" value="${institution.id}"
-                                           data-category-name="${institution.name}"/>
+                            <form:checkbox path="categories" value="${category.id}"
+                                           data-category-name="${category.name}"/>
                             <span class="checkbox"></span>
-                            <span class="description">${institution.name}</span>
+                            <span class="description">${category.name}</span>
                         </label>
                     </div>
                 </c:forEach>

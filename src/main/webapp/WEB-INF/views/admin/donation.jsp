@@ -26,8 +26,8 @@
             <th>Institution</th>
             <th>Address</th>
             <th>Phone number</th>
-            <th>Pick Up Date</th>
-            <th>Pick Up Time</th>
+            <th>Pick Up Date Time</th>
+            <th>Created</th>
             <th>User Id</th>
             <th>Action</th>
         </tr>
@@ -48,8 +48,15 @@
                 </td>
                 <td>${donation.street}, ${donation.zipCode} ${donation.city}</td>
                 <td>${donation.phoneNumber}</td>
-                <td>${donation.pickUpDate}</td>
-                <td>${donation.pickUpTime}</td>
+                <td>
+                    <p>${donation.pickUpTime}</p>
+                    <p>${donation.pickUpDate}</p>
+
+                </td>
+                <td>
+                    <p>${donation.createdTime}</p>
+                    <p>${donation.createdDate}</p>
+                </td>
                 <td>${donation.user.id}</td>
                 <td>
                     <button class="w3-button w3-black"
