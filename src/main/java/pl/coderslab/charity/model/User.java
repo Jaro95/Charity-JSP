@@ -37,6 +37,4 @@ public class User {
     private Set<Role> roles;
     private String token;
     private LocalDateTime createdAccount;
-    @OneToMany
-    private List<Donation> donations;
 }

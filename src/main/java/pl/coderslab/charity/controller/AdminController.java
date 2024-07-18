@@ -93,7 +93,6 @@ public class AdminController {
         }
         User user = userRepository.findById(id).get();
         user.getRoles().clear();
-        user.getDonations().clear();
         userRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Użytkownik usunięty pomyślnie");
         return "redirect:/charity/admin";

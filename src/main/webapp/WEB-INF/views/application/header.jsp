@@ -27,7 +27,7 @@
                     <sec:authentication property="principal.user.name"/>
                 </sec:authorize>
                 <ul class="dropdown">
-                    <li><a href="#">Profil</a></li>
+                    <li><a href="/charity/donation/profile">Profil</a></li>
                     <li><a href="#">Moje zbiórki</a></li>
                     <li><a href="/charity/donation/logout">Wyloguj</a></li>
                 </ul>
