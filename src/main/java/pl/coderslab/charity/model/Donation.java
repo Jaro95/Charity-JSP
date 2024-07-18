@@ -43,4 +43,6 @@ public class Donation {
     private LocalTime pickUpTime;
     @Size(max=500)
     private String pickUpComment;
+    @ManyToOne
+    private User user;
 }

@@ -1,6 +1,7 @@
 package pl.coderslab.charity.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.model.Category;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AdminService {
 
     private final RoleRepository roleRepository;
@@ -32,8 +34,8 @@ public class AdminService {
             Role superAdminRole = Role.builder().name("ROLE_SUPER_ADMIN").build();
             Role adminRole = Role.builder().name("ROLE_ADMIN").build();
             Role userRole = Role.builder().name("ROLE_USER").build();
-
             roleRepository.saveAll(List.of(superAdminRole, adminRole, userRole));
+            log.info("Created role");
         }
     }
 
@@ -47,6 +49,7 @@ public class AdminService {
                     Category.builder().name("inne").build()
             );
             categoryRepository.saveAll(basic);
+            log.info("Created basic category");
         }
     }
 
@@ -59,6 +62,7 @@ public class AdminService {
                     new Institution("Bez domu", "Pomoc dla osób nie posiadających miejsca zamieszkania")
             );
             institutionRepository.saveAll(basic);
+            log.info("Created basic institution");
         }
     }
 
@@ -75,6 +79,7 @@ public class AdminService {
                             .roles(new HashSet<>(Arrays.asList(roleSuperAdmin,roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
+                            .enabled(true)
                             .build(),
                     User.builder()
                             .email("admin@admin")
@@ -83,9 +88,10 @@ public class AdminService {
                             .roles(new HashSet<>(Arrays.asList(roleAdmin,roleUser)))
                             .password(passwordEncoder.encode("admin"))
                             .createdAccount(LocalDateTime.now())
+                            .enabled(true)
                             .build());
             userRepository.saveAll(userList);
-
+            log.info("Created first admin");
         }
     }
 }

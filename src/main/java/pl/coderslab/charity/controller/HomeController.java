@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.dto.RegistrationDTO;
+import pl.coderslab.charity.model.Donation;
 import pl.coderslab.charity.repository.DonationRepository;
 import pl.coderslab.charity.repository.InstitutionRepository;
 import pl.coderslab.charity.service.UserService;
+
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -29,8 +32,8 @@ public class HomeController {
     @GetMapping("")
     public String homeAction(Model model) {
         model.addAttribute("institutions", institutionRepository.findAll());
-        model.addAttribute("quantityBag", donationRepository.allQuantityBag());
-        model.addAttribute("allDonations", donationRepository.allDonations());
+        model.addAttribute("quantityBag", donationRepository.allQuantityBag().orElse(0L));
+        model.addAttribute("allDonations", donationRepository.allDonations().orElse(0L));
         return "home/main";
     }
 
