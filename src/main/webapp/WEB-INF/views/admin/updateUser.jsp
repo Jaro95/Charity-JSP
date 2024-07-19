@@ -21,7 +21,6 @@
                 <th>Email</th>
                 <th>Enabled</th>
                 <th>Role</th>
-                <th>Password</th>
                 <th>Full name</th>
                 <th>Action</th>
             </tr>
@@ -59,18 +58,18 @@
                         <form:input path="roles" type="hidden"/>
                     </td>
                 </sec:authorize>
-                <sec:authorize access="hasRole('SUPER_ADMIN')">
-                    <td><input name="password" type="text" value="${userPassword}"/></td>
-                </sec:authorize>
-                <sec:authorize access="!hasRole('SUPER_ADMIN')">
-                    <td>${userPassword}</td>
+
                     <form:input path="password" type="hidden"/>
-                </sec:authorize>
                 <td><form:input path="name"/> <form:input path="lastName"/>
                 <p><form:errors path="name" cssClass="alert alert-error"/>
                     <form:errors path="lastName" cssClass="alert alert-error"/></p>
                 </td>
                 <td>
+                    <sec:authorize access="hasRole('SUPER_ADMIN')">
+                        <a class="w3-button w3-black" href="charity/admin/user/password?id=${userId}">
+                            <i class="fa fa-hat-wizard"></i> Zmień hasło
+                        </a>
+                    </sec:authorize>
                     <button class="w3-button w3-black" type="submit">
                         <i class="fa fa-save"></i> Zapisz
                     </button>
