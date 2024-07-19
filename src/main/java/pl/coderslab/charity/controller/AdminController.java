@@ -2,6 +2,7 @@ package pl.coderslab.charity.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.model.Category;
+import pl.coderslab.charity.model.Donation;
 import pl.coderslab.charity.model.Institution;
 import pl.coderslab.charity.model.User;
 import pl.coderslab.charity.repository.*;
@@ -19,11 +21,13 @@ import pl.coderslab.charity.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/charity/admin")
+@Slf4j
 public class AdminController {
 
     private final AdminService adminService;
@@ -35,7 +39,7 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping("/create-start")
-    public String createBasicInstitution(){
+    public String createBasicInstitution() {
         adminService.createBasicInstitution();
         adminService.createBasicCategory();
         adminService.createRole();
@@ -45,41 +49,37 @@ public class AdminController {
 
     @GetMapping("")
     public String panelAdmin(Model model) {
-        model.addAttribute("userList",userRepository.findAll());
+        model.addAttribute("userList", userRepository.findAll());
         return "admin/adminPanel";
     }
+
     @GetMapping("/user/update")
-    public String getUpdateUser(@RequestParam Long id,Model model) {
+    public String getUpdateUser(@RequestParam Long id, Model model) {
         User user = userRepository.findById(id).get();
-        model.addAttribute("user",user);
-        model.addAttribute("userId",user.getId());
-        model.addAttribute("userEmail",user.getEmail());
-        model.addAttribute("roles",roleRepository.findAll());
-        model.addAttribute("userRole",user.getRoles());
-        model.addAttribute("userPassword",user.getPassword());
+        model.addAttribute("user", user);
+        model.addAttribute("userId", user.getId());
+        model.addAttribute("userEmail", user.getEmail());
+        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("userRole", user.getRoles());
+        model.addAttribute("userPassword", user.getPassword());
         return "admin/updateUser";
     }
 
     @PostMapping("/user/update")
-    public String postUpdateUser(@Valid User user ,@RequestParam(required = false) String password,
+    public String postUpdateUser(@Valid User user,
                                  Model model, BindingResult result,
                                  RedirectAttributes redirectAttributes) {
-        if(result.hasErrors()) {
-            model.addAttribute("user",user);
-            model.addAttribute("userId",user.getId());
-            model.addAttribute("userEmail",user.getEmail());
-            model.addAttribute("roles",roleRepository.findAll());
-            model.addAttribute("userRole",user.getRoles());
-            model.addAttribute("userPassword",user.getPassword());
-            model.addAttribute("errors",result.getAllErrors());
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("userEmail", user.getEmail());
+            model.addAttribute("roles", roleRepository.findAll());
+            model.addAttribute("userRole", user.getRoles());
+            model.addAttribute("userPassword", user.getPassword());
+            model.addAttribute("errors", result.getAllErrors());
             return "admin/updateUser";
         }
-        if (password != null) {
-            userService.updateUser(user,password);
-        } else {
-            userService.updateUser(user);
-        }
-
+        userService.updateUser(user);
         redirectAttributes.addFlashAttribute("message", "Edycja przebiedła pomyslnie");
         return "redirect:/charity/admin";
     }
@@ -87,7 +87,7 @@ public class AdminController {
     @GetMapping("/user/delete")
     public String getDeleteUser(@RequestParam Long id, @AuthenticationPrincipal CurrentUser currentUser,
                                 RedirectAttributes redirectAttributes) {
-        if(currentUser.getUser().getId() == id) {
+        if (currentUser.getUser().getId() == id) {
             redirectAttributes.addFlashAttribute("messageError", "Nie możesz usunąć samego siebie");
             return "redirect:/charity/admin";
         }
@@ -103,7 +103,7 @@ public class AdminController {
         if (updateId != null) {
             model.addAttribute("updateId", updateId);
         }
-        model.addAttribute("categoryList",categoryRepository.findAll());
+        model.addAttribute("categoryList", categoryRepository.findAll());
         return "admin/category";
     }
 
@@ -120,17 +120,17 @@ public class AdminController {
 
     @GetMapping("/category/add")
     public String getAddCategory(Model model) {
-        model.addAttribute("category",new Category());
+        model.addAttribute("category", new Category());
         return "admin/addCategory";
     }
 
     @PostMapping("/category/add")
     public String postAddCategory(@Valid Category category, Model model,
                                   BindingResult result, RedirectAttributes redirectAttributes) {
-        if(result.hasErrors()) {
-            model.addAttribute("category",category);
-            model.addAttribute("errors",result.getAllErrors());
-            model.addAttribute("messageError","Napotkano błędy w formularzu");
+        if (result.hasErrors()) {
+            model.addAttribute("category", category);
+            model.addAttribute("errors", result.getAllErrors());
+            model.addAttribute("messageError", "Napotkano błędy w formularzu");
             return "admin/addCategory";
         }
         categoryRepository.save(category);
@@ -139,7 +139,7 @@ public class AdminController {
     }
 
     @GetMapping("/category/delete")
-    public String getDeleteCategory(@RequestParam Long deleteId,RedirectAttributes redirectAttributes) {
+    public String getDeleteCategory(@RequestParam Long deleteId, RedirectAttributes redirectAttributes) {
         categoryRepository.deleteById(deleteId);
         redirectAttributes.addFlashAttribute("message", "Kategoria usunięta pomyślnie");
         return "redirect:/charity/admin/category";
@@ -151,12 +151,51 @@ public class AdminController {
         return "admin/donation";
     }
 
-    @GetMapping("/institution")
-    public String getInstitution(@RequestParam(required = false) Long updateId ,Model model) {
-        if(updateId != null) {
-            model.addAttribute("updateId",updateId);
+    @GetMapping("/donation/update")
+    public String getUpdateDonation(@RequestParam Long id, Model model) {
+        Optional<Donation> donation = donationRepository.findById(id);
+        if(donation.isEmpty()) {
+            return "redirect:charity/admin/donation";
         }
-        model.addAttribute("institutionList",institutionRepository.findAll());
+        model.addAttribute("donation", donation.get());
+        model.addAttribute("institutions", institutionRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("createdDate", donation.get().getCreatedDate());
+        model.addAttribute("createdTime", donation.get().getCreatedTime());
+        return "admin/updateDonation";
+    }
+
+    @PostMapping("/donation/update")
+    public String postUpdateDonation(@Valid Donation donation, BindingResult result,
+                                     RedirectAttributes redirectAttributes, Model model) {
+        if(result.hasErrors()) {
+            model.addAttribute("donation", donation);
+            model.addAttribute("institutions", institutionRepository.findAll());
+            model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("createdDate", donation.getCreatedDate());
+            model.addAttribute("createdTime", donation.getCreatedTime());
+            model.addAttribute("errors", result.getAllErrors());
+            return "admin/updateDonation";
+        }
+        donationRepository.save(donation);
+        redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyslnie");
+        log.info("Updated donation: {}", donation.toString());
+        return "redirect:/charity/admin/donation";
+    }
+
+    @GetMapping("/donation/delete")
+    public String getDeleteDonation(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        donationRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("message", "Dar usunięty pomyślnie");
+        return "redirect:/charity/admin/donation";
+    }
+
+    @GetMapping("/institution")
+    public String getInstitution(@RequestParam(required = false) Long updateId, Model model) {
+        if (updateId != null) {
+            model.addAttribute("updateId", updateId);
+        }
+        model.addAttribute("institutionList", institutionRepository.findAll());
         return "admin/institution";
     }
 
@@ -164,7 +203,7 @@ public class AdminController {
     public String postInstitution(@RequestParam long institutionId, @RequestParam String institutionName,
                                   @RequestParam String institutionDescription,
                                   Model model,
-                                  RedirectAttributes redirectAttributes ) {
+                                  RedirectAttributes redirectAttributes) {
         Institution institution = institutionRepository.findById(institutionId).get();
         institution.setName(institutionName);
         institution.setDescription(institutionDescription);
@@ -182,7 +221,7 @@ public class AdminController {
     @PostMapping("/institution/add")
     public String getAddInstitution(@Valid Institution institution, BindingResult result,
                                     Model model, RedirectAttributes redirectAttributes) {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("institution", institution);
             model.addAttribute("errors", result.getAllErrors());
             model.addAttribute("messageError", "Napotkano błędy w formularzu");
@@ -194,7 +233,7 @@ public class AdminController {
     }
 
     @GetMapping("/institution/delete")
-    public String getDeleteInstitution(@RequestParam Long deleteId,RedirectAttributes redirectAttributes) {
+    public String getDeleteInstitution(@RequestParam Long deleteId, RedirectAttributes redirectAttributes) {
         institutionRepository.deleteById(deleteId);
         redirectAttributes.addFlashAttribute("message", "Fundacja usunięta pomyślnie");
         return "redirect:/charity/admin/institution";

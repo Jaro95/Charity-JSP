@@ -27,6 +27,7 @@
             <th>Address</th>
             <th>Phone number</th>
             <th>Pick Up Date Time</th>
+            <th>Receive</th>
             <th>Created</th>
             <th>User Id</th>
             <th>Action</th>
@@ -53,6 +54,7 @@
                     <p>${donation.pickUpDate}</p>
 
                 </td>
+                <td>${donation.receive}</td>
                 <td>
                     <p>${donation.createdTime}</p>
                     <p>${donation.createdDate}</p>
