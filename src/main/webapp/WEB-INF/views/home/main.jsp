@@ -10,6 +10,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="header.jsp"/>
+<c:if test="${not empty messageError}">
+    <h1 class="slogan--steps">
+        <div class="alert alert-error">
+                ${messageError}
+        </div>
+    </h1>
+</c:if>
+<c:if test="${not empty message}">
+    <h1 class="slogan--steps">
+        <div class="alert alert-success">
+                ${message}
+        </div>
+    </h1>
+</c:if>
 <div class="slogan container container--90">
     <div class="slogan--item">
         <h1>
@@ -64,7 +78,7 @@
         </div>
     </div>
 
-    <a href="#" class="btn btn--large">Załóż konto</a>
+    <a href="/charity/registration" class="btn btn--large">Załóż konto</a>
 </section>
 
 <section id="about-us" class="about-us">

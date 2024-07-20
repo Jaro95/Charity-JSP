@@ -7,16 +7,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.coderslab.charity.dto.EditPassword;
 import pl.coderslab.charity.dto.RegistrationDTO;
 import pl.coderslab.charity.model.Donation;
+import pl.coderslab.charity.model.RecoveryPassword;
 import pl.coderslab.charity.model.User;
 import pl.coderslab.charity.repository.DonationRepository;
 import pl.coderslab.charity.repository.InstitutionRepository;
+import pl.coderslab.charity.repository.RecoveryPasswordRepository;
+import pl.coderslab.charity.repository.UserRepository;
 import pl.coderslab.charity.service.CurrentUser;
 import pl.coderslab.charity.service.UserService;
 
@@ -31,6 +32,8 @@ public class HomeController {
     private final InstitutionRepository institutionRepository;
     private final DonationRepository donationRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final RecoveryPasswordRepository recoveryPasswordRepository;
 
     @GetMapping("")
     public String homeAction(Model model) {
@@ -53,15 +56,74 @@ public class HomeController {
     }
 
     @PostMapping("/registration")
-    public String postRegistration(@Valid RegistrationDTO registrationDTO, RedirectAttributes redirectAttributes,
-                                   BindingResult result, Model model) {
+    public String postRegistration(@Valid RegistrationDTO registrationDTO,BindingResult result,
+                                   Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("registrationDTO", registrationDTO);
             model.addAttribute("errors", result.getAllErrors());
             return "home/registration";
         }
+        if (!registrationDTO.getPassword().equals(registrationDTO.getRepeatPassword())) {
+            model.addAttribute("registrationDTO", registrationDTO);
+            model.addAttribute("messageError", "Hasła nie są takie same");
+            return "home/registration";
+        }
+        if (userRepository.findByEmail(registrationDTO.getEmail()).isPresent()) {
+            model.addAttribute("registrationDTO", registrationDTO);
+            model.addAttribute("messageError", "Email jest już zajęty");
+            return "home/registration";
+        }
+
         userService.saveUser(registrationDTO);
         redirectAttributes.addFlashAttribute("message", "Rejestracja przebiegła pomyślnie");
+        return "redirect:/charity/login";
+    }
+
+    @GetMapping("/recovery/email")
+    public String getRecoveryPasswordEmail() {
+        return "home/recoveryPasswordEmail";
+    }
+
+    @PostMapping("/recovery/email")
+    public String postRecoveryPasswordEmail(@RequestParam String email, RedirectAttributes attributes) {
+        Optional<User> user = userService.findByEmail(email);
+        if (user.isEmpty()) {
+           attributes.addFlashAttribute("messageError", "Niepoprawny Email");
+            return "redirect:/charity/recovery/email";
+        }
+        userService.sendRecoveryPasswordEmail(email);
+        attributes.addFlashAttribute("message", "Link z potwierdzeniem zmiany hasła został wysłany na email");
+        return "redirect:/charity/login";
+    }
+
+    @GetMapping("/recovery/password")
+    public String getRecoveryPassword(@RequestParam String token, RedirectAttributes redirectAttributes,Model model) {
+        Optional<RecoveryPassword> recoveryPassword = recoveryPasswordRepository.findByTokenRecoveryPassword(token);
+        if (recoveryPassword.isEmpty()) {
+            redirectAttributes.addFlashAttribute("messageError", "Niepoprawny token");
+            return "redirect:/charity";
+        }
+        model.addAttribute("editPassword", new EditPassword());
+        model.addAttribute("email", recoveryPassword.get().getEmail());
+        return "home/recoveryPassword";
+    }
+
+    @PostMapping("/recovery/password")
+    public String postRecoveryPassword(@Valid EditPassword editPassword, BindingResult result, @RequestParam String email ,
+                                       Model model,  RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            model.addAttribute("editPassword", new EditPassword());
+            model.addAttribute("email", email);
+            model.addAttribute("errors", result.getAllErrors());
+            return "home/recoveryPassword";
+        }
+        if (!editPassword.getPassword().equals(editPassword.getRepeatPassword())) {
+            model.addAttribute("email", email);
+            model.addAttribute("wrongRepeatPassword", "Hasła nie są takie same");
+            return "home/recoveryPassword";
+        }
+        userService.resetPassword(email, editPassword.getPassword());
+        redirectAttributes.addFlashAttribute("message", "Hasło zostało zmienione");
         return "redirect:/charity/login";
     }
 
