@@ -10,18 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pl.coderslab.charity.model.Category;
-import pl.coderslab.charity.model.Donation;
-import pl.coderslab.charity.model.Institution;
-import pl.coderslab.charity.model.User;
+import pl.coderslab.charity.dto.EditPassword;
+import pl.coderslab.charity.model.*;
 import pl.coderslab.charity.repository.*;
 import pl.coderslab.charity.service.AdminService;
 import pl.coderslab.charity.service.CurrentUser;
 import pl.coderslab.charity.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Controller
@@ -51,6 +47,17 @@ public class AdminController {
     public String panelAdmin(Model model) {
         model.addAttribute("userList", userRepository.findAll());
         return "admin/adminPanel";
+    }
+    @GetMapping("/userList")
+    public String userList(Model model) {
+        model.addAttribute("userList", userRepository.allUsers());
+        return "admin/userList";
+    }
+    @GetMapping("/adminList")
+    public String adminList(Model model) {
+        List<User> adminList = userRepository.allAdmins();
+        model.addAttribute("userList", adminList);
+        return "admin/adminList";
     }
 
     @GetMapping("/user/update")
@@ -95,6 +102,38 @@ public class AdminController {
         user.getRoles().clear();
         userRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Użytkownik usunięty pomyślnie");
+        return "redirect:/charity/admin";
+    }
+
+    @GetMapping("/user/password")
+    public String getEditPassword(@RequestParam Long id ,Model model) {
+        if (!id.describeConstable().isPresent()) {
+            return "redirect:/charity/admin";
+        }
+        model.addAttribute("id", id);
+        model.addAttribute("editPassword", new EditPassword());
+        return "admin/editPassword";
+    }
+
+    @PostMapping("/user/password")
+    public String postEditPassword(@RequestParam Long id, @Valid EditPassword editPassword,BindingResult result,
+                                   RedirectAttributes redirectAttributes,
+                                   Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("editPassword", new EditPassword());
+            model.addAttribute("id", id);
+            model.addAttribute("errors", result.getAllErrors());
+            return "admin/editPassword";
+        }
+        if (!editPassword.getPassword().equals(editPassword.getRepeatPassword())) {
+            model.addAttribute("editPassword", new EditPassword());
+            model.addAttribute("id", id);
+            model.addAttribute("messageError", "Hasła nie są takie same");
+            return "admin/editPassword";
+        }
+
+        userService.resetPasswordForAdmin(id,editPassword.getPassword());
+        redirectAttributes.addFlashAttribute("message", "Hasło zostało zmienione");
         return "redirect:/charity/admin";
     }
 

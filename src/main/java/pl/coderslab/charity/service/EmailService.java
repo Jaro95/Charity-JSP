@@ -22,4 +22,16 @@ public class EmailService {
         email.setText(message);
         emailSender.send(email);
     }
+
+    public void sendResetPassword(String to, String token) {
+        String subject = "Reset Password";
+        String confirmationUrl = "http://localhost:8080/charity/recovery/password?token=" + token;
+        String message = "To confirm change password, please click here : " + confirmationUrl;
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(to);
+        email.setSubject(subject);
+        email.setText(message);
+        emailSender.send(email);
+    }
 }

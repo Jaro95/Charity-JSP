@@ -66,7 +66,7 @@
                 </td>
                 <td>
                     <sec:authorize access="hasRole('SUPER_ADMIN')">
-                        <a class="w3-button w3-black" href="charity/admin/user/password?id=${userId}">
+                        <a class="w3-button w3-black" href="/charity/admin/user/password?id=${userId}">
                             <i class="fa fa-hat-wizard"></i> Zmień hasło
                         </a>
                     </sec:authorize>

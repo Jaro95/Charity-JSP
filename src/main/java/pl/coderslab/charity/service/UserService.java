@@ -12,4 +12,7 @@ public interface UserService {
     void saveUser(RegistrationDTO user);
     void updateUser(User user, String password);
     void updateUser(User user);
+    void sendRecoveryPasswordEmail(String email);
+    void resetPassword(String email, String password);
+    void resetPasswordForAdmin(Long id, String password);
 }

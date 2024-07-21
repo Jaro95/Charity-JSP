@@ -11,7 +11,7 @@
 <jsp:include page="header.jsp"/>
 
 <div class="w3-display-container w3-light-grey contact" id="admin">
-    <p class="w3-center w3-jumbo cantact-info">All users:</p>
+    <p class="w3-center w3-jumbo cantact-info">Users:</p>
     <c:if test="${not empty message}">
         <div class="alert alert-success">
                 ${message}
@@ -23,8 +23,8 @@
         </div>
     </c:if>
     <p class="w3-center w3-jumbo cantact-info"><button class="w3-button w3-black"
-                                                       onclick="location.href='/charity/admin/userList'">
-        <i class="fa fa-user"></i> Only user</button>
+                                                       onclick="location.href='/charity/admin'">
+        <i class="fa fa-users"></i>All users</button>
     </p>
     <p class="w3-center w3-jumbo cantact-info"><button class="w3-button w3-black"
                                                        onclick="location.href='/charity/admin/adminList'">

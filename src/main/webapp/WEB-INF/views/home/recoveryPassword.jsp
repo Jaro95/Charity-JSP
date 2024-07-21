@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -36,43 +37,31 @@
             <li><a href="/charity#contact" class="btn btn--without-border">Kontakt</a></li>
         </ul>
     </nav>
-
 </header>
+<%--<c:if test="${not empty wrongRepeatPassword}">--%>
+<%--<h1 class="slogan--steps">--%>
+<%--    <div class="alert alert-error">--%>
+<%--            ${wrongRepeatPassword}--%>
+<%--    </div>--%>
+<%--</h1>--%>
+<%--</c:if>--%>
 <section class="login-page">
-<%--    <c:if test="${not empty messageError}">--%>
-<%--        <h1 class="slogan--steps">--%>
-<%--            <div class="alert alert-error">--%>
-<%--                    ${messageError}--%>
-<%--            </div>--%>
-<%--        </h1>--%>
-<%--    </c:if>--%>
-    <h2>Załóż konto</h2>
-    <form:form method="post" modelAttribute="registrationDTO">
-        <div class="form-group">
-            <form:input path="email" type="email" placeholder="Email"/>
-            <form:errors path="email" cssClass="alert alert-error"/>
-        </div>
-        <div class="form-group">
-            <form:input type="text" path="firstName" placeholder="Imię"/>
-            <form:errors path="firstName" cssClass="alert alert-error"/>
-        </div>
-        <div class="form-group">
-            <form:input type="text" path="lastName" placeholder="Nazwisko"/>
-            <form:errors path="lastName" cssClass="alert alert-error"/>
-        </div>
-        <div class="form-group">
-            <form:input type="password" path="password" placeholder="Hasło"/>
-            <h3><form:errors path="password" cssClass="alert alert-error"/></h3>
-        </div>
-        <div class="form-group">
-            <form:input type="password" path="repeatPassword" placeholder="Powtórz hasło"/>
-            <h3><form:errors path="repeatPassword" cssClass="alert alert-error"/></h3>
-        </div>
 
-        <div class="form-group form-group--buttons">
-            <a href="/login" class="btn btn--without-border">Zaloguj się</a>
-            <button class="btn" type="submit">Załóż konto</button>
+    <h2>Wprowadź nowe hasło</h2>
+    <form:form modelAttribute="editPassword"  method="post" >
+        <div class="form-group centre-text">
+            <input:input type="password" path="password" class="centre-text"/>
+            <form:errors path="password" cssClass="alert alert-error"/>
         </div>
+        <div class="form-group centre-text">
+            <input:input type="password" path="repeatPassword" class="centre-text"/>
+            <form:errors path="repeatPassword" cssClass="alert alert-error"/>
+        </div>
+        <div class="form-group centre-text">
+            <button type="submit" class="btn">Wyślij</button>
+        </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <input type="hidden" name="email" value="${email}">
     </form:form>
 </section>
 <jsp:include page="footer.jsp"/>
