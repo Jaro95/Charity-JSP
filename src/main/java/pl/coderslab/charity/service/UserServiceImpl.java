@@ -91,6 +91,16 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Override
+    public void resetPasswordForAdmin(Long id, String password) {
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(e -> {
+            user.get().setPassword(passwordEncoder.encode(password));
+            userRepository.save(user.get());
+            log.info("User {} changed password", user.get().getEmail());
+        });
+    }
+
     public void deleteOccurrenceEmailInListReset(String email) {
         Optional<RecoveryPassword> validOccurrenceEmail = recoveryPasswordRepository.findByEmail(email);
         validOccurrenceEmail.ifPresent( e ->

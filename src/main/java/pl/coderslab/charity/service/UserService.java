@@ -14,4 +14,5 @@ public interface UserService {
     void updateUser(User user);
     void sendRecoveryPasswordEmail(String email);
     void resetPassword(String email, String password);
+    void resetPasswordForAdmin(Long id, String password);
 }
