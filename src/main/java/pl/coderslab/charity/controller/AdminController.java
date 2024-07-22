@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.charity.dto.EditPassword;
 import pl.coderslab.charity.model.*;
 import pl.coderslab.charity.repository.*;
-import pl.coderslab.charity.service.AdminService;
+
 import pl.coderslab.charity.service.CurrentUser;
 import pl.coderslab.charity.service.UserService;
 
@@ -26,7 +25,7 @@ import java.util.*;
 @Slf4j
 public class AdminController {
 
-    private final AdminService adminService;
+  //  private final AdminService adminService;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final InstitutionRepository institutionRepository;
@@ -34,14 +33,6 @@ public class AdminController {
     private final RoleRepository roleRepository;
     private final UserService userService;
 
-    @GetMapping("/create-start")
-    public String createBasicInstitution() {
-        adminService.createBasicInstitution();
-        adminService.createBasicCategory();
-        adminService.createRole();
-        adminService.createBasicAdmin();
-        return "redirect:/charity";
-    }
 
     @GetMapping("")
     public String panelAdmin(Model model) {
@@ -67,7 +58,7 @@ public class AdminController {
         model.addAttribute("userId", user.getId());
         model.addAttribute("userEmail", user.getEmail());
         model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("userRole", user.getRoles());
+        model.addAttribute("userRole", user.getRole());
         model.addAttribute("userPassword", user.getPassword());
         return "admin/updateUser";
     }
@@ -81,7 +72,7 @@ public class AdminController {
             model.addAttribute("userId", user.getId());
             model.addAttribute("userEmail", user.getEmail());
             model.addAttribute("roles", roleRepository.findAll());
-            model.addAttribute("userRole", user.getRoles());
+            model.addAttribute("userRole", user.getRole());
             model.addAttribute("userPassword", user.getPassword());
             model.addAttribute("errors", result.getAllErrors());
             return "admin/updateUser";
@@ -99,7 +90,7 @@ public class AdminController {
             return "redirect:/charity/admin";
         }
         User user = userRepository.findById(id).get();
-        user.getRoles().clear();
+        user.getRole().clear();
         userRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Użytkownik usunięty pomyślnie");
         return "redirect:/charity/admin";
@@ -206,7 +197,9 @@ public class AdminController {
 
     @PostMapping("/donation/update")
     public String postUpdateDonation(@Valid Donation donation, BindingResult result,
-                                     RedirectAttributes redirectAttributes, Model model) {
+                                      RedirectAttributes redirectAttributes,
+                                     Model model) {
+
         if(result.hasErrors()) {
             model.addAttribute("donation", donation);
             model.addAttribute("institutions", institutionRepository.findAll());
@@ -216,6 +209,7 @@ public class AdminController {
             model.addAttribute("errors", result.getAllErrors());
             return "admin/updateDonation";
         }
+        donation.setUser(donationRepository.findById(donation.getId()).get().getUser());
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyslnie");
         log.info("Updated donation: {}", donation.toString());

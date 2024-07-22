@@ -18,7 +18,7 @@
                 ${message}
         </div>
     </c:if>
-    <form:form modelAttribute="donation">
+    <form:form modelAttribute="donation" method="post">
 
         <table id="adminTable" class="display">
             <thead>
@@ -44,7 +44,7 @@
                 <td><form:input path="quantity" type="number" step="1" min="1" id="quantityBag"/></td>
                 <td>
                     <c:forEach items="${categories}" var="category">
-                        <p><form:checkbox path="categories" value="${category}"/> ${category.name}</p>
+                        <p><form:checkbox path="category" value="${category}"/> ${category.name}</p>
                     </c:forEach>
                 </td>
                 <td>

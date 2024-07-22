@@ -48,7 +48,7 @@
                 <td>${donation.email}</td>
                 <td>${donation.enabled}</td>
                 <td>
-                    <c:forEach items="${donation.roles}" var="role">
+                    <c:forEach items="${donation.role}" var="role">
                         <p>${role.name}</p>
                     </c:forEach>
                 </td>
