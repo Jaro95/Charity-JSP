@@ -27,5 +27,4 @@ public class SpringDataUserDetailsService implements UserDetailsService {
                         .collect(Collectors.toList())
                 ,user.get());
     }
-
 }

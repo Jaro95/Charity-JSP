@@ -39,7 +39,6 @@ public class DonationController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-
     @GetMapping("")
     public String giveDonation(Model model) {
         model.addAttribute("institutions", institutionRepository.findAll());
