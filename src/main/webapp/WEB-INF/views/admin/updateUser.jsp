@@ -44,7 +44,7 @@
                 <sec:authorize access="hasRole('SUPER_ADMIN')">
                     <td>
                         <c:forEach items="${roles}" var = "role" >
-                           <p>${role.name}: <form:checkbox path="roles"
+                           <p>${role.name}: <form:checkbox path="role"
                                              value="${role}"/></p>
                         </c:forEach>
 
@@ -55,7 +55,7 @@
                         <c:forEach items="${userRole}" var="role">
                         <p>${role.name}</p>
                         </c:forEach>
-                        <form:input path="roles" type="hidden"/>
+                        <form:input path="role" type="hidden"/>
                     </td>
                 </sec:authorize>
 

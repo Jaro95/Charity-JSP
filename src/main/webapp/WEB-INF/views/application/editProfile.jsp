@@ -15,7 +15,7 @@
         <form:input path="id" type="hidden"/>
         <form:input path="password" type="hidden"/>
         <form:input path="enabled" type="hidden"/>
-        <form:input path="roles" type="hidden"/>
+        <form:input path="role" type="hidden"/>
         <form:input path="token" type="hidden"/>
         <form:input path="createdAccount" type="hidden"/>
     <div class="help--slides active" data-id="1">

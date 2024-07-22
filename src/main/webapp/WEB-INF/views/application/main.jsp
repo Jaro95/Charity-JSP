@@ -93,14 +93,14 @@
                 <c:forEach items="${categories}" var="category">
                     <div class="form-group form-group--checkboxes">
                         <label>
-                            <form:checkbox path="categories" value="${category.id}"
+                            <form:checkbox path="category" value="${category.id}"
                                            data-category-name="${category.name}"/>
                             <span class="checkbox"></span>
                             <span class="description">${category.name}</span>
                         </label>
                     </div>
                 </c:forEach>
-                <h1><form:errors path="categories" cssClass="alert alert-error "/></h1>
+                <h1><form:errors path="category" cssClass="alert alert-error "/></h1>
 
                 <div class="form-group form-group--buttons">
                     <button type="button" class="btn next-step">Dalej</button>

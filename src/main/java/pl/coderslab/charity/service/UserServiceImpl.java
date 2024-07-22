@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .name(user.getFirstName())
                 .lastName(user.getLastName())
-                .roles(new HashSet<>(Arrays.asList(userRole)))
+                .role(new HashSet<>(Arrays.asList(userRole)))
                 .password(passwordEncoder.encode(user.getPassword()))
                 .createdAccount(LocalDateTime.now())
                 .enabled(false)

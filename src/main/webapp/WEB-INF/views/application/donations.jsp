@@ -86,7 +86,7 @@
                 <td>${status.count}</td>
                 <td>${donation.quantity}</td>
                 <td>
-                    <c:forEach items="${donation.categories}" var="categories">
+                    <c:forEach items="${donation.category}" var="categories">
                         <p>${categories.name}</p>
                     </c:forEach>
                 </td>
