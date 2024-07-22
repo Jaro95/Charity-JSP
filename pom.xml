@@ -149,6 +149,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>charity</finalName>
     </build>
 
 </project>

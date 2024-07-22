@@ -23,13 +23,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/**").permitAll()
-                                //           .requestMatchers("/charity","/charity/login","/charity/registration").permitAll()
-//                        .requestMatchers("charity/admin/create-start").permitAll()
-//                        .requestMatchers("/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
-//                       .requestMatchers("/charity/donation/**").hasRole("USER")
-//                       .requestMatchers("/charity/admin/**").hasAnyRole("ADMIN","SUPER_ADMIN")
-                                .anyRequest().authenticated()
+                        .requestMatchers("/charity", "/charity/login", "/charity/registration").permitAll()
+                        .requestMatchers("/charity/donation/**").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/charity/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/images/**", "/css/**", "/js/**", "/WEB-INF/views/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/charity/login")
@@ -43,11 +41,11 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                         .logoutRequestMatcher(new AntPathRequestMatcher("/charity/donation/logout", "GET"))
+                )
+                .securityContext(context -> context
+                        .requireExplicitSave(false)
                 );
-//                .exceptionHandling(exceptionHandling -> exceptionHandling
-//                        .accessDeniedPage("/login")
-//                );;
-        //.exceptionHandling(exception -> exception.accessDeniedPage("/403"));
+
         return http.build();
     }
 
