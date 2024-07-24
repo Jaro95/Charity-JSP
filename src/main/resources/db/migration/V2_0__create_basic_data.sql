@@ -13,7 +13,7 @@ VALUES ('superAdmin@admin',
         'verified'),
         ('user@user',
         'Gohan',
-        'Sayan',
+        'Saiyan',
         '$2a$10$RAQmc7JXKC4VQgNr7F.cxO7dUXcdtXwriFmyC9ZdC8F18ZWiD0Mwe',
         1,
         'verified');

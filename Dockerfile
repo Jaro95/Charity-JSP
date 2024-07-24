@@ -1,7 +1,7 @@
 FROM openjdk:17-jdk
 
-COPY target/charity.war .
+COPY target/charity.jar .
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-war", "charity.war"]
+ENTRYPOINT ["java","-jar", "charity.jar"]
