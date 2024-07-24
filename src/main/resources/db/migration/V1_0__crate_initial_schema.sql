@@ -58,7 +58,7 @@ CREATE TABLE donation_category (
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
-CREATE TABLE recoveryPassword (
+CREATE TABLE recovery_password (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email varchar(50) NOT NULL,
     token_recovery_password varchar(255) NOT NULL,
