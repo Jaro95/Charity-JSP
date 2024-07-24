@@ -1,6 +1,7 @@
 package pl.coderslab.charity.domain.category;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,14 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/rest/controller")
+@RequestMapping("/rest/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }

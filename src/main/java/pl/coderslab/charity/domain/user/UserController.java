@@ -9,25 +9,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/rest/user")
+@RequestMapping("/rest/users")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/list/users")
-    public List<User> getOnlyUsers() {
-        return userService.getOnlyUsers();
+    @GetMapping("/{role}")
+    public List<User> getUsersWithRole(@PathVariable String role) {
+        return userService.getUsersWithRole(role);
     }
 
-    @GetMapping("/list/admins")
-    public List<User> getOnlyAdmins() {
-        return userService.getOnlyAdmins();
-    }
 
     @PostMapping("/registration")
     public String registration(@RequestBody @Valid RegistrationRequest registrationRequest, BindingResult result) {
@@ -53,5 +49,4 @@ public class UserController {
     public String postRecoveryPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
         return userService.resetPassword(resetPasswordRequest,bindingResult);
     }
-
 }

@@ -2,8 +2,7 @@ package pl.coderslab.charity.domain.donation;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.charity.domain.category.Category;
 import pl.coderslab.charity.domain.institution.Institution;
@@ -13,9 +12,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @Entity
 @NoArgsConstructor
+@Builder
 public class Donation {
 
     @Id
@@ -44,12 +46,15 @@ public class Donation {
     private LocalDate pickUpDate;
     @NotNull
     private LocalTime pickUpTime;
+    @Size(max=500)
+    private String pickUpComment;
     private boolean receive;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdDate;
     private LocalTime createdTime;
-    @Size(max=500)
-    private String pickUpComment;
     @ManyToOne
     private User user;
 }
+
+
+

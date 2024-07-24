@@ -25,10 +25,10 @@ public class InstitutionService {
     public String addInstitution(Optional<InstitutionRequest> institutionRequest) {
         institutionRequest.ifPresent(i -> {
             institutionRepository.save(Institution.builder()
-                    .name(institutionRequest.get().name())
-                    .description(institutionRequest.get().description())
+                    .name(i.name())
+                    .description(i.description())
                     .build());
-            log.info("Added new institution:\n{}\n{}", institutionRequest.get().name(), institutionRequest.get().description());
+            log.info("Added new institution:\n{}\n{}", i.name(), i.description());
         });
 
         return institutionRequest.isPresent() ? "Added new institution:\n" + institutionRequest.get().name() + "\n" +

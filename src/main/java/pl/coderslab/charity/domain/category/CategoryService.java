@@ -25,9 +25,9 @@ public class CategoryService {
     public String addCategory(Optional<CategoryRequest> categoryRequest) {
         categoryRequest.ifPresent(c -> {
             categoryRepository.save(Category.builder()
-                    .name(categoryRequest.get().name())
+                    .name(c.name())
                     .build());
-            log.info("Added new category:\n{}\n{}", categoryRequest.get().name());
+            log.info("Added new category:\n{}\n{}", c.name());
         });
         return categoryRequest.isPresent() ? "Added new category:\n" + categoryRequest.get().name()
         : "Category not added";

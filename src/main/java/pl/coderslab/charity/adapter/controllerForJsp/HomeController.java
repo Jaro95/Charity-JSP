@@ -50,7 +50,7 @@ public class HomeController {
 
     @GetMapping("/registration")
     public String getRegistration(Model model) {
-        model.addAttribute("registrationDTO", new RegistrationRequest());
+        model.addAttribute("registrationRequest", new RegistrationRequest());
         return "home/registration";
     }
 
@@ -58,17 +58,17 @@ public class HomeController {
     public String postRegistration(@Valid RegistrationRequest registrationRequest, BindingResult result,
                                    Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            model.addAttribute("registrationDTO", registrationRequest);
+            model.addAttribute("registrationRequest", registrationRequest);
             model.addAttribute("errors", result.getAllErrors());
             return "home/registration";
         }
         if (!registrationRequest.getPassword().equals(registrationRequest.getRepeatPassword())) {
-            model.addAttribute("registrationDTO", registrationRequest);
+            model.addAttribute("registrationRequest", registrationRequest);
             model.addAttribute("messageError", "Hasła nie są takie same");
             return "home/registration";
         }
         if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
-            model.addAttribute("registrationDTO", registrationRequest);
+            model.addAttribute("registrationRequest", registrationRequest);
             model.addAttribute("messageError", "Email jest już zajęty");
             return "home/registration";
         }

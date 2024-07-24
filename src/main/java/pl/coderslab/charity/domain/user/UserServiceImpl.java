@@ -98,9 +98,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
         for (User user : users) {
-            for (Role role : user.getRole()) {
-                role.getUser().clear();
-            }
+            user.getRole().forEach(role -> role.getUser().clear());
         }
         return users;
     }
@@ -111,6 +109,17 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             for (Role role : user.getRole()) {
                 role.getUser().clear();
+            }
+        }
+        return users;
+    }
+
+    @Override
+    public List<User> getUsersWithRole(String role) {
+        List<User> users = userRepository.withRole(role);
+        for (User user : users) {
+            for (Role roleUser : user.getRole()) {
+                roleUser.getUser().clear();
             }
         }
         return users;

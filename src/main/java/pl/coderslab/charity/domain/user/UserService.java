@@ -18,6 +18,7 @@ public interface UserService {
     List<User> getAllUsers();
     List<User> getOnlyUsers();
     List<User> getOnlyAdmins();
+    List<User> getUsersWithRole(String role);
     String registrationUser(RegistrationRequest registrationRequest, BindingResult bindingResult);
     String activateUser(String token);
     String resetPasswordCheckEmail(String email);
