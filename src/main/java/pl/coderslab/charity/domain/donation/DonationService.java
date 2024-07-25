@@ -62,4 +62,42 @@ public class DonationService {
         return donationRequest.isPresent() ? "Added new donation:\n" + donationRequest.get()
                 : "Donation not added";
     }
+
+    public String updateDonation(Long id, Optional<DonationRequest> donationRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return bindingResult.getAllErrors().toString();
+        }
+        Optional<Donation> donation = donationRepository.findById(id);
+        donation.ifPresent(d -> {
+            donationRequest.ifPresent(dr -> {
+                d.setQuantity(dr.quantity());
+                d.setCategory(dr.category());
+                d.setInstitution(dr.institution());
+                d.setStreet(dr.street());
+                d.setCity(dr.city());
+                d.setZipCode(dr.zipCode());
+                d.setPhoneNumber(dr.phoneNumber());
+                d.setPickUpDate(dr.pickUpDate());
+                d.setPickUpTime(dr.pickUpTime());
+                d.setReceive(dr.receive());
+                d.setCreatedDate(dr.createdDate());
+                d.setCreatedTime(dr.createdTime());
+                d.setPickUpComment(dr.pickUpComment());
+                d.setUser(userRepository.findById(dr.userId()).orElse(null));
+            });
+            donationRepository.save(d);
+            log.info("Updated donation: {}", d.toString());
+        });
+        return donation.isPresent() && donationRequest.isPresent() ? "Updated donation"
+                : "The donation to update was not found";
+    }
+
+    public String deleteDonation(Long id) {
+        Optional<Donation> donation = donationRepository.findById(id);
+        donation.ifPresent(d -> {
+            donationRepository.delete(d);
+            log.info("Deleted donation:\n{}",d.toString());
+        });
+        return donation.isPresent() ? "Donation deleted" : "The donation to delete was not found";
+    }
 }

@@ -36,7 +36,7 @@ public class InstitutionService {
 
     }
 
-    public String updateInstitution(Long id, Optional<InstitutionRequest> institutionRequest ) {
+    public String updateInstitution(Long id, Optional<InstitutionRequest> institutionRequest) {
         Optional<Institution> institution = institutionRepository.findById(id);
         institution.ifPresent(i -> {
             institutionRequest.ifPresent( ir -> {

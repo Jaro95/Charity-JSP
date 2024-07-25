@@ -32,4 +32,14 @@ public class DonationsController {
         return donationService.addDonation(donationRequest,bindingResult);
     }
 
+    @PutMapping("/update/{id}")
+    public String updateDonation( @PathVariable Long id, @RequestBody @Valid Optional<DonationRequest> donationRequest,
+                                  BindingResult bindingResult) {
+        return donationService.updateDonation(id ,donationRequest, bindingResult);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteDonation(@PathVariable Long id) {
+        return donationService.deleteDonation(id);
+    }
 }
