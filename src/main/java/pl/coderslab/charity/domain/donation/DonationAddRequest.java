@@ -1,24 +1,20 @@
 package pl.coderslab.charity.domain.donation;
 
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.coderslab.charity.domain.category.Category;
-import pl.coderslab.charity.domain.institution.Institution;
-import pl.coderslab.charity.domain.institution.InstitutionRequest;
-import pl.coderslab.charity.domain.user.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record DonationRequest
+public record DonationAddRequest
         (
         @NotNull
         int quantity,
         @NotEmpty
-        List<Category> category,
-        Institution institution,
+        List<Long> categoryId,
+        @NotNull
+        Long institutionId,
         @NotBlank
         @Size(max=100)
         String street,
