@@ -21,7 +21,7 @@ public interface UserService {
     List<User> getUsersWithRole(String role);
     RegistrationResponse registrationUser(RegistrationRequest registrationRequest);
     ActivateUserResponse activateUser(ActivateUserRequest activateUserRequest);
-    String resetPasswordCheckEmail(String email);
-    String resetPasswordCheckToken(String token);
-    String resetPassword(ResetPasswordRequest resetPasswordRequest);
+    EmailCheckEmailResponse resetPasswordCheckEmail(String email);
+    ResetPasswordCheckTokenResponse resetPasswordCheckToken(ResetPasswordCheckTokenRequest resetPasswordCheckTokenRequest);
+    ResetPasswordCheckTokenResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
 }

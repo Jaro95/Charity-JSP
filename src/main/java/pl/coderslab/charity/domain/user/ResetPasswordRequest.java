@@ -8,5 +8,7 @@ public record ResetPasswordRequest(String token,
                                    @Pattern(
                                            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=])(?=\\S+$).{8,}$",
                                            message = "Hasło musi zawierać wielkie litery, małe litery, cyfry i znaki specjalne"
-                                   ) String password,String repeatPassword) {
+                                   )
+                                   String password,
+                                   String repeatPassword) {
 }

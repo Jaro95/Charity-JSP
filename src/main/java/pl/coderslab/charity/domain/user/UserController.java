@@ -26,29 +26,28 @@ public class UserController {
         return new UserListResponse(userService.getUsersWithRole(role));
     }
 
-
     @PostMapping("/registration")
     public RegistrationResponse registration(@RequestBody @Valid RegistrationRequest registrationRequest) {
         return userService.registrationUser(registrationRequest);
     }
 
     @GetMapping("/verification")
-    public ActivateUserResponse activateUser(@RequestParam(required = false) ActivateUserRequest activateUserRequest) {
+    public ActivateUserResponse activateUser(@RequestBody(required = false) ActivateUserRequest activateUserRequest) {
         return userService.activateUser(activateUserRequest);
     }
 
     @PostMapping("/recovery/{email}")
-    public String postRecoveryPasswordEmail(@PathVariable String email) {
+    public EmailCheckEmailResponse postRecoveryPasswordEmail(@PathVariable String email) {
         return userService.resetPasswordCheckEmail(email);
     }
 
     @GetMapping("/recovery/password")
-    public String getRecoveryPassword(@RequestParam(required = false) String token) {
-        return userService.resetPasswordCheckToken(token);
+    public ResetPasswordCheckTokenResponse getRecoveryPassword(@RequestBody(required = false) ResetPasswordCheckTokenRequest resetPasswordCheckTokenRequest) {
+        return userService.resetPasswordCheckToken(resetPasswordCheckTokenRequest);
     }
 
     @PostMapping("/recovery/password")
-    public String postRecoveryPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordCheckTokenResponse postRecoveryPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
         return userService.resetPassword(resetPasswordRequest);
     }
 }
