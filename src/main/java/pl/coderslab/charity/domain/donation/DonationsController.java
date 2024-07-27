@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -16,8 +14,8 @@ public class DonationsController {
     private final DonationService donationService;
 
     @GetMapping("")
-    public List<Donation> getAllDonations() {
-        return donationService.getAllDonations();
+    public DonationListResponse getAllDonations() {
+        return new DonationListResponse(donationService.getAllDonations());
     }
 
     @GetMapping("/{id}")

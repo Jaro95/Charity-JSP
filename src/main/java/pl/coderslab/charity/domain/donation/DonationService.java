@@ -41,7 +41,7 @@ public class DonationService {
 
     public DonationAddRequest addDonation(DonationAddRequest donationAddRequest) {
         List<Category> categories = new ArrayList<>();
-        donationAddRequest.categoryId().forEach(c -> categories.add(categoryRepository.findById(c).orElseThrow(IllegalArgumentException::new)));
+        donationAddRequest.categoryIdList().forEach(c -> categories.add(categoryRepository.findById(c).orElseThrow(IllegalArgumentException::new)));
         donationRepository.save(Donation.builder()
                 .quantity(donationAddRequest.quantity())
                 .category(categories)
@@ -66,70 +66,62 @@ public class DonationService {
         Optional<Donation> donation = donationRepository.findById(id);
         List<Category> categories = new ArrayList<>();
         donation.ifPresent(d -> {
-            if (!donationUpdateRequest.categoryId().isEmpty()) {
-                donationUpdateRequest.categoryId()
-                        .forEach(c -> categories.add(categoryRepository.findById(c)
-                                .orElseThrow(IllegalArgumentException::new)));
-            }
-
-            if (donationUpdateRequest.quantity().describeConstable().isPresent()) {
-                d.setQuantity(d.getQuantity() == donationUpdateRequest.quantity() ? d.getQuantity()
-                        : donationUpdateRequest.quantity());
-            }
-
+            Optional.ofNullable(donationUpdateRequest.categoryIdList())
+                    .filter(categoriesIdList -> !categoriesIdList.isEmpty())
+                    .ifPresent(categoryIdList-> categoryIdList.forEach(categoryId ->
+                            categories.add(categoryRepository.findById(categoryId)
+                            .orElseThrow(IllegalArgumentException::new)))
+                    );
             if (!categories.isEmpty()) {
                 d.setCategory(categories.equals(d.getCategory()) ? d.getCategory() : categories);
             }
 
-            if (donationUpdateRequest.institutionId().describeConstable().isPresent()) {
-                d.setInstitution(d.getInstitution().getId() == donationUpdateRequest.institutionId() ? d.getInstitution()
-                        : institutionRepository.findById(donationUpdateRequest.institutionId()).orElseThrow(IllegalArgumentException::new));
-            }
+            Optional.ofNullable(donationUpdateRequest.quantity()).ifPresent(quantity -> {
+                d.setQuantity(d.getQuantity() == quantity ? d.getQuantity() : quantity);
+            });
 
-            if (!donationUpdateRequest.donationAddress().getStreet().isEmpty()) {
-                d.setStreet(d.getStreet().equals(donationUpdateRequest.donationAddress().getStreet()) ? d.getStreet()
-                        : donationUpdateRequest.donationAddress().getStreet());
-            }
+            Optional.ofNullable(donationUpdateRequest.institutionId()).ifPresent(institutionID ->
+                    d.setInstitution(d.getInstitution().getId() == institutionID ? d.getInstitution()
+                            : institutionRepository.findById(institutionID).orElseThrow(IllegalArgumentException::new))
+            );
 
-            if (!donationUpdateRequest.donationAddress().getCity().isEmpty()) {
-                d.setCity(d.getCity().equals(donationUpdateRequest.donationAddress().getCity()) ? d.getCity()
-                        : donationUpdateRequest.donationAddress().getCity());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getStreet()).ifPresent(street ->
+                    d.setStreet(d.getStreet().equals(street) ? d.getStreet() : street)
+            );
 
-            if (!donationUpdateRequest.donationAddress().getZipCode().isEmpty()) {
-                d.setZipCode(d.getZipCode().equals(donationUpdateRequest.donationAddress().getZipCode()) ? d.getStreet()
-                        : donationUpdateRequest.donationAddress().getZipCode());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getCity()).ifPresent(city ->
+                    d.setCity(d.getCity().equals(city) ? d.getCity() : city)
+            );
 
-            if (donationUpdateRequest.donationAddress().getPhoneNumber().describeConstable().isPresent()) {
-                d.setPhoneNumber(d.getPhoneNumber() == donationUpdateRequest.donationAddress().getPhoneNumber() ? d.getPhoneNumber()
-                        : donationUpdateRequest.donationAddress().getPhoneNumber());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getZipCode()).ifPresent(zipCode ->
+                    d.setZipCode(d.getZipCode().equals(zipCode) ? d.getStreet() : zipCode)
+            );
 
-            if (donationUpdateRequest.donationAddress().getPickUpDate() != null) {
-                d.setPickUpDate(d.getPickUpDate().equals(donationUpdateRequest.donationAddress().getPickUpDate()) ? d.getPickUpDate()
-                        : donationUpdateRequest.donationAddress().getPickUpDate());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getPhoneNumber()).ifPresent(phoneNumber ->
+                    d.setPhoneNumber(d.getPhoneNumber() == phoneNumber ? d.getPhoneNumber() : phoneNumber)
+            );
 
-            if (donationUpdateRequest.donationAddress().getPickUpTime() != null) {
-                d.setPickUpTime(d.getPickUpTime().equals(donationUpdateRequest.donationAddress().getPickUpTime()) ? d.getPickUpTime()
-                        : donationUpdateRequest.donationAddress().getPickUpTime());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getPickUpDate()).ifPresent(pickUpDate ->
+                    d.setPickUpDate(d.getPickUpDate().equals(pickUpDate) ? d.getPickUpDate() : pickUpDate)
+            );
 
-            if (donationUpdateRequest.receive() != null) {
-                d.setReceive(d.isReceive() == donationUpdateRequest.receive() ? d.isReceive()
-                        : donationUpdateRequest.receive());
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getPickUpTime()).ifPresent(pickUpTime ->
+                    d.setPickUpTime(d.getPickUpTime().equals(pickUpTime) ? d.getPickUpTime() : pickUpTime)
+            );
 
-            if (!donationUpdateRequest.donationAddress().getPickUpComment().isEmpty()) {
-                d.setPickUpComment(d.getPickUpComment().equals(donationUpdateRequest.donationAddress().getPickUpComment()) ?
-                        d.getPickUpComment() : donationUpdateRequest.donationAddress().getPickUpComment());
-            }
+            Optional.ofNullable(donationUpdateRequest.receive()).ifPresent(receive ->
+                    d.setReceive(d.isReceive() == receive ? d.isReceive()
+                            : receive)
+                    );
 
-            if (donationUpdateRequest.userId().describeConstable().isPresent()) {
-                d.setUser(d.getUser().getId() == donationUpdateRequest.userId() ? d.getUser()
-                        :userRepository.findById(donationUpdateRequest.userId()).orElseThrow(IllegalArgumentException::new));
-            }
+            Optional.ofNullable(donationUpdateRequest.donationAddress().getPickUpComment()).ifPresent(pickUpComment ->
+                            d.setPickUpComment(d.getPickUpComment().equals(pickUpComment) ? d.getPickUpComment() : pickUpComment)
+                    );
+
+            Optional.ofNullable(donationUpdateRequest.userId()).ifPresent(userId -> d.setUser(d.getUser().getId() == userId ?
+                            d.getUser() : userRepository.findById(userId).orElseThrow(IllegalArgumentException::new))
+                    );
+
             donationRepository.save(d);
             log.info("Updated donation: {}", d.toString());
             d.getUser().getRole().forEach(role -> role.getUser().clear());

@@ -1,12 +1,9 @@
 package pl.coderslab.charity.domain.institution;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +14,8 @@ public class InstitutionController {
     private final InstitutionService institutionService;
 
     @GetMapping("")
-    public List<Institution> getAllInstitutions() {
-        return institutionService.getAllInstitutions();
+    public InstitutionListResponse getAllInstitutions() {
+        return new InstitutionListResponse(institutionService.getAllInstitutions());
     }
 
     @GetMapping("/{id}")
@@ -27,17 +24,17 @@ public class InstitutionController {
     }
 
     @PostMapping("/add")
-    public String addInstitution(@RequestBody Optional<InstitutionRequest> institutionRequest) {
-        return institutionService.addInstitution(institutionRequest);
+    public InstitutionAddResponse addInstitution(@RequestBody @Valid InstitutionAddRequest institutionAddRequest) {
+        return new InstitutionAddResponse(institutionService.addInstitution(institutionAddRequest));
     }
 
-    @PutMapping("/update/{id}")
-    public String updateInstitution(@PathVariable Long id, @RequestBody Optional<InstitutionRequest> institutionRequest) {
-        return institutionService.updateInstitution(id,institutionRequest);
+    @PutMapping("/{id}")
+    public InstitutionResponse updateInstitution(@PathVariable Long id, @RequestBody @Valid InstitutionRequest institutionRequest) {
+        return new InstitutionResponse(institutionService.updateInstitution(id,institutionRequest));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteInstitution(@PathVariable Long id) {
-        return institutionService.deleteInstitution(id);
+    @DeleteMapping("/{id}")
+    public InstitutionResponse deleteInstitution(@PathVariable Long id) {
+        return new InstitutionResponse(institutionService.deleteInstitution(id));
     }
 }

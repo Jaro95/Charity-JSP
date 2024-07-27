@@ -22,48 +22,37 @@ public class InstitutionService {
         return institutionRepository.findById(id);
     }
 
-    public String addInstitution(Optional<InstitutionRequest> institutionRequest) {
-        institutionRequest.ifPresent(i -> {
+    public InstitutionAddRequest addInstitution(InstitutionAddRequest institutionAddRequest) {
             institutionRepository.save(Institution.builder()
-                    .name(i.name())
-                    .description(i.description())
+                    .name(institutionAddRequest.name())
+                    .description(institutionAddRequest.description())
                     .build());
-            log.info("Added new institution:\n{}\n{}", i.name(), i.description());
-        });
-
-        return institutionRequest.isPresent() ? "Added new institution:\n" + institutionRequest.get().name() + "\n" +
-                institutionRequest.get().description() : "Institution not added";
-
+            log.info("Added new institution:\n{}\n{}", institutionAddRequest.name(), institutionAddRequest.description());
+        return institutionAddRequest;
     }
 
-    public String updateInstitution(Long id, Optional<InstitutionRequest> institutionRequest) {
+    public Optional<Institution> updateInstitution(Long id, InstitutionRequest institutionRequest) {
         Optional<Institution> institution = institutionRepository.findById(id);
         institution.ifPresent(i -> {
-            institutionRequest.ifPresent( ir -> {
-                if (ir.name() != null) {
-                    i.setName(ir.name());
-                }
-                if (ir.description() != null) {
-                    i.setDescription(ir.description());
-                }
+                Optional.ofNullable(institutionRequest.name()).ifPresent(name ->
+                        i.setName(i.getName().equals(name) ? i.getName() : name)
+                        );
+                Optional.ofNullable(institutionRequest.description()).ifPresent(description ->
+                        i.setDescription(i.getDescription().equals(description) ? i.getDescription() : description)
+                        );
                 institutionRepository.save(i);
                 log.info("Updated institution: {}", i.toString());
-            });
+
         });
-        return institution.isPresent() && institutionRequest.isPresent() ? "Updated institution:\n" + institution.get().getName() + "\n" +
-                institution.get().getDescription() : "The institution to update was not found";
+        return institution;
     }
 
-    public String deleteInstitution(Long id) {
+    public Optional<Institution> deleteInstitution(Long id) {
         Optional<Institution> institution = institutionRepository.findById(id);
         institution.ifPresent(i -> {
             institutionRepository.delete(i);
             log.info("Deleted institution: {}", i.toString());
         });
-        return institution.isPresent() ? "Deleted institution:\n" + institution.get().getName() + "\n"
-                + institution.get().getDescription() : "The institution to delete was not found";
+        return institution;
     }
-
-
-
 }

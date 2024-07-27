@@ -12,7 +12,7 @@ public record DonationAddRequest
         @NotNull
         int quantity,
         @NotEmpty
-        List<Long> categoryId,
+        List<Long> categoryIdList,
         @NotNull
         Long institutionId,
         @NotBlank

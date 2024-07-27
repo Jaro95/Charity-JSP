@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.charity.domain.institution.Institution;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,24 +17,24 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public UserListResponse getAllUsers() {
+        return new UserListResponse(userService.getAllUsers());
     }
 
     @GetMapping("/{role}")
-    public List<User> getUsersWithRole(@PathVariable String role) {
-        return userService.getUsersWithRole(role);
+    public UserListResponse getUsersWithRole(@PathVariable String role) {
+        return new UserListResponse(userService.getUsersWithRole(role));
     }
 
 
     @PostMapping("/registration")
-    public String registration(@RequestBody @Valid RegistrationRequest registrationRequest, BindingResult result) {
-        return userService.registrationUser(registrationRequest,result);
+    public RegistrationResponse registration(@RequestBody @Valid RegistrationRequest registrationRequest) {
+        return userService.registrationUser(registrationRequest);
     }
 
     @GetMapping("/verification")
-    public String activateUser(@RequestParam(required = false) String token) {
-        return userService.activateUser(token);
+    public ActivateUserResponse activateUser(@RequestParam(required = false) ActivateUserRequest activateUserRequest) {
+        return userService.activateUser(activateUserRequest);
     }
 
     @PostMapping("/recovery/{email}")
@@ -46,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/recovery/password")
-    public String postRecoveryPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
-        return userService.resetPassword(resetPasswordRequest,bindingResult);
+    public String postRecoveryPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+        return userService.resetPassword(resetPasswordRequest);
     }
 }

@@ -22,39 +22,34 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public String addCategory(Optional<CategoryRequest> categoryRequest) {
-        categoryRequest.ifPresent(c -> {
-            categoryRepository.save(Category.builder()
-                    .name(c.name())
-                    .build());
-            log.info("Added new category:\n{}\n{}", c.name());
-        });
-        return categoryRequest.isPresent() ? "Added new category:\n" + categoryRequest.get().name()
-        : "Category not added";
+    public CategoryAddRequest addCategory(CategoryAddRequest categoryAddRequest) {
+
+        categoryRepository.save(Category.builder()
+                .name(categoryAddRequest.name())
+                .build());
+        log.info("Added new category:\n{}\n{}", categoryAddRequest.name());
+
+        return categoryAddRequest;
     }
 
-    public String updateCategory(Long id, Optional<CategoryRequest> categoryRequest) {
+    public Optional<Category> updateCategory(Long id, CategoryRequest categoryRequest) {
         Optional<Category> category = categoryRepository.findById(id);
-        category.ifPresent(c -> {
-            categoryRequest.ifPresent(cr -> {
-                if (cr.name() != null) {
-                    c.setName(cr.name());
-                }
-                categoryRepository.save(c);
-                log.info("Updated category:\n {}",c.toString());
-            });
+        category.ifPresent(c ->
+        {
+            Optional.ofNullable(categoryRequest.name()).ifPresent(name ->
+                    c.setName(c.getName().equals(name) ? c.getName() : name));
+            categoryRepository.save(c);
+            log.info("Updated category:\n {}", c.toString());
         });
-        return category.isPresent() && categoryRequest.isPresent() ? "Updated category:\n" + category.get().getName()
-                : "The category to update was not found";
+        return category;
     }
 
-    public String deleteCategory(Long id) {
+    public Optional<Category> deleteCategory(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         category.ifPresent(c -> {
             categoryRepository.delete(c);
-            log.info("Deleted category:\n {}",c.toString());
+            log.info("Deleted category:\n {}", c.toString());
         });
-        return category.isPresent() ? "Deleted category:\n" + category.get().getName()
-                :"The category to delete was not found";
+        return category;
     }
 }

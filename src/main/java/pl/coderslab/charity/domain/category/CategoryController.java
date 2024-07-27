@@ -1,12 +1,9 @@
 package pl.coderslab.charity.domain.category;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +14,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public CategoryListResponse getAllCategories() {
+        return new CategoryListResponse(categoryService.getAllCategories());
     }
 
     @GetMapping("/{id}")
@@ -27,17 +24,17 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addCategory(@RequestBody Optional<CategoryRequest> categoryRequest) {
-        return categoryService.addCategory(categoryRequest);
+    public CategoryAddResponse addCategory(@RequestBody @Valid CategoryAddRequest categoryAddRequest) {
+        return new CategoryAddResponse(categoryService.addCategory(categoryAddRequest));
     }
 
-    @PutMapping("/update/{id}")
-    public String updateCategory(@PathVariable Long id, @RequestBody Optional<CategoryRequest> categoryRequest) {
-        return categoryService.updateCategory(id,categoryRequest);
+    @PutMapping("/{id}")
+    public CategoryResponse updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryRequest categoryRequest) {
+        return new CategoryResponse(categoryService.updateCategory(id,categoryRequest));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable Long id) {
-        return categoryService.deleteCategory(id);
+    @DeleteMapping("/{id}")
+    public CategoryResponse deleteCategory(@PathVariable Long id) {
+         return new CategoryResponse(categoryService.deleteCategory(id));
     }
 }
