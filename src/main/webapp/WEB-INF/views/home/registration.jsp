@@ -47,7 +47,7 @@
 <%--        </h1>--%>
 <%--    </c:if>--%>
     <h2>Załóż konto</h2>
-    <form:form method="post" modelAttribute="registrationDTO">
+    <form:form method="post" modelAttribute="registrationRequest">
         <div class="form-group">
             <form:input path="email" type="email" placeholder="Email"/>
             <form:errors path="email" cssClass="alert alert-error"/>
