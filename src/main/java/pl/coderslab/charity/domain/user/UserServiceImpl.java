@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 import pl.coderslab.charity.infrastructure.security.Role;
 import pl.coderslab.charity.infrastructure.security.RoleRepository;
 
@@ -39,13 +38,13 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .name(user.getFirstName())
                 .lastName(user.getLastName())
-                .role(new HashSet<>(Arrays.asList(userRole)))
+                .role(new HashSet<>(Collections.singletonList(userRole)))
                 .password(passwordEncoder.encode(user.getPassword()))
                 .createdAccount(LocalDateTime.now())
                 .enabled(false)
                 .token(UUID.randomUUID().toString())
                 .build());
-        emailService.sendVerificationEmail(user.getEmail(), userRepository.findByEmail(user.getEmail()).get().getToken());
+        emailService.sendVerificationEmail(user.getEmail(), userRepository.findByEmail(user.getEmail()).orElseThrow().getToken());
     }
 
     @Override
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
                 .localDateTime(LocalDateTime.now())
                 .build());
         Optional<RecoveryPassword> recoveryPassword = recoveryPasswordRepository.findByEmail(email);
-        emailService.sendResetPassword(email, recoveryPassword.get().getTokenRecoveryPassword());
+        emailService.sendResetPassword(email, recoveryPassword.orElseThrow().getTokenRecoveryPassword());
     }
 
     @Override
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
             user.get().setPassword(passwordEncoder.encode(password));
             userRepository.save(user.get());
             deleteOccurrenceEmailInListReset(email);
-            log.info("User {} changed password", user.get().getEmail());
+            passwordChangeSuccess(user.get());
         });
     }
 
@@ -90,97 +89,12 @@ public class UserServiceImpl implements UserService {
         user.ifPresent(e -> {
             user.get().setPassword(passwordEncoder.encode(password));
             userRepository.save(user.get());
-            log.info("User {} changed password", user.get().getEmail());
+            passwordChangeSuccess(user.get());
         });
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        for (User user : users) {
-            user.getRole().forEach(role -> role.getUser().clear());
-        }
-        return users;
-    }
-
-    @Override
-    public List<User> getUsersWithRole(String role) {
-        List<User> users = userRepository.withRole(role);
-        for (User user : users) {
-            for (Role roleUser : user.getRole()) {
-                roleUser.getUser().clear();
-            }
-        }
-        return users;
-    }
-
-    @Override
-    public List<User> getOnlyUsers() {
-        List<User> users = userRepository.onlyUsers();
-        for (User user : users) {
-            for (Role role : user.getRole()) {
-                role.getUser().clear();
-            }
-        }
-        return users;
-    }
-
-    @Override
-    public List<User> getOnlyAdmins() {
-        List<User> users = userRepository.onlyAdmins();
-        for (User user : users) {
-            for (Role role : user.getRole()) {
-                role.getUser().clear();
-            }
-        }
-        return users;
-    }
-
-    @Override
-    public RegistrationResponse registrationUser(RegistrationRequest registrationRequest) {
-        if (!registrationRequest.getPassword().equals(registrationRequest.getRepeatPassword())) {
-            return new RegistrationResponse(false,"Passwords are not the same", registrationRequest);
-        }
-        if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
-            return new RegistrationResponse(false,"Email is already taken", registrationRequest);
-        }
-        saveUser(registrationRequest);
-        log.info("Added new user:\nEmail:{}\nName:{}\nLast name:{}", registrationRequest.getEmail(),
-                registrationRequest.getFirstName(),registrationRequest.getLastName());
-        return new RegistrationResponse(true,"Registration successful", registrationRequest);
-    }
-
-
-    @Override
-    public EmailCheckEmailResponse resetPasswordCheckEmail(String email) {
-        Optional<User> user = findByEmail(email);
-        if (user.isEmpty()) {
-            return new EmailCheckEmailResponse(false,"Wrong Email");
-        }
-        sendRecoveryPasswordEmail(email);
-        return new EmailCheckEmailResponse(true,"A password reset link has been sent to your email address");
-    }
-
-    @Override
-    public ResetPasswordCheckTokenResponse resetPasswordCheckToken(ResetPasswordCheckTokenRequest resetPasswordCheckTokenRequest) {
-        Optional<RecoveryPassword> recoveryPassword = recoveryPasswordRepository.findByTokenRecoveryPassword(resetPasswordCheckTokenRequest.token());
-        if (recoveryPassword.isEmpty()) {
-            return new ResetPasswordCheckTokenResponse(false,"Token is invalid");
-        }
-        return new ResetPasswordCheckTokenResponse(true, "Token is valid");
-    }
-
-    @Override
-    public ResetPasswordCheckTokenResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Optional<RecoveryPassword> recoveryPassword = recoveryPasswordRepository.findByTokenRecoveryPassword(resetPasswordRequest.token());
-        if (recoveryPassword.isEmpty()) {
-            return new ResetPasswordCheckTokenResponse(false,"Token is invalid");
-        }
-        if (!resetPasswordRequest.password().equals(resetPasswordRequest.repeatPassword())) {
-            return new ResetPasswordCheckTokenResponse(false,"Passwords are not the same");
-        }
-        resetPassword(recoveryPassword.get().getEmail(), resetPasswordRequest.password());
-        return new ResetPasswordCheckTokenResponse(true,"The password has been changed");
+    public void passwordChangeSuccess(User user) {
+        log.info("User {} changed password", user.getEmail());
     }
 
     public void deleteOccurrenceEmailInListReset(String email) {

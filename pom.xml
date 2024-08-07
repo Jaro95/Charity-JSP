@@ -99,6 +99,18 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -122,7 +134,7 @@
                 <version>${flyway.version}</version>
                 <configuration>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3302/charity_donation?serverTimezone=UTC</url>
+                    <url>jdbc:mysql://localhost:3302/charity_donation_jsp?serverTimezone=UTC</url>
                     <user>root</user>
                     <password>saiyan</password>
                     <table>flyway_schema_history</table>

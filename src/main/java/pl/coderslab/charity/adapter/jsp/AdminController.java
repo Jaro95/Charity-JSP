@@ -52,7 +52,7 @@ public class AdminController {
     }
     @GetMapping("/adminList")
     public String adminList(Model model) {
-        List<User> adminList = userRepository.onlyAdmins();
+        List<User> adminList = userRepository.withRole("ROLE_ADMIN");
         model.addAttribute("userList", adminList);
         return "admin/adminList";
     }
@@ -218,7 +218,7 @@ public class AdminController {
         donation.setUser(donationRepository.findById(donation.getId()).orElseThrow().getUser());
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("message", "Edycja przebiegła pomyslnie");
-        log.info("Updated donation: {}", donation.toString());
+        log.info("Updated donation: {}", donation);
         return "redirect:/charity/admin/donation";
     }
 
