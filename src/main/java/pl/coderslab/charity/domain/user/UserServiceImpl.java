@@ -150,17 +150,6 @@ public class UserServiceImpl implements UserService {
         return new RegistrationResponse(true,"Registration successful", registrationRequest);
     }
 
-    @Override
-    public ActivateUserResponse activateUser(ActivateUserRequest activateUserRequest) {
-        Optional<User> user = findByToken(activateUserRequest.token());
-        if (user.isEmpty()) {
-            return new ActivateUserResponse(false,"Token invalid or expired");
-        }
-        user.get().setEnabled(true);
-        user.get().setToken("verified");
-        updateUser(user.get());
-        return new ActivateUserResponse(true,"The account has been activated");
-    }
 
     @Override
     public EmailCheckEmailResponse resetPasswordCheckEmail(String email) {

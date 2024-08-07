@@ -20,7 +20,6 @@ public interface UserService {
     List<User> getOnlyAdmins();
     List<User> getUsersWithRole(String role);
     RegistrationResponse registrationUser(RegistrationRequest registrationRequest);
-    ActivateUserResponse activateUser(ActivateUserRequest activateUserRequest);
     EmailCheckEmailResponse resetPasswordCheckEmail(String email);
     ResetPasswordCheckTokenResponse resetPasswordCheckToken(ResetPasswordCheckTokenRequest resetPasswordCheckTokenRequest);
     ResetPasswordCheckTokenResponse resetPassword(ResetPasswordRequest resetPasswordRequest);

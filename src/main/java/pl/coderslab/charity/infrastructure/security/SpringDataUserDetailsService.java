@@ -22,7 +22,7 @@ public class SpringDataUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userService.findByEmail(email);
 
-        return new CurrentUser(user.get().getEmail(), user.get().getPassword(),
+        return new CurrentUser(user.orElseThrow().getEmail(), user.get().getPassword(),
                 user.get().getRole().stream()
                         .map(role -> new SimpleGrantedAuthority(role.getName()))
                         .collect(Collectors.toList())

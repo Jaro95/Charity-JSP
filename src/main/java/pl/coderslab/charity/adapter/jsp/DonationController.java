@@ -1,4 +1,4 @@
-package pl.coderslab.charity.adapter.controllerForJsp;
+package pl.coderslab.charity.adapter.jsp;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -47,8 +47,8 @@ public class DonationController {
     }
 
     @PostMapping("")
-    public String postGiveDonation(@Valid Donation donation, @AuthenticationPrincipal CurrentUser currentUser,
-                                   BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String postGiveDonation(@Valid Donation donation, BindingResult result, @AuthenticationPrincipal CurrentUser currentUser,
+                                    Model model, RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
             model.addAttribute("institutions", institutionRepository.findAll());
             model.addAttribute("donation", donation);
@@ -63,17 +63,17 @@ public class DonationController {
         donation.setReceive(false);
         donationRepository.save(donation);
         redirectAttributes.addFlashAttribute("donationSuccessFull", "completed");
-       // log.info("Added donation {}", donation.toString());
+        log.info("Added donation {}", donation);
         return "redirect:/charity/donation";
     }
 
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        User user = userRepository.findById(currentUser.getUser().getId()).get();
+        User user = userRepository.findById(currentUser.getUser().getId()).orElseThrow();
         model.addAttribute("name", user.getName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("email", user.getEmail());
-        model.addAttribute("donation", donationRepository.countDonationsUser(user.getId()).get());
+        model.addAttribute("donation", donationRepository.countDonationsUser(user.getId()).orElseThrow());
         return "application/profile";
     }
 
