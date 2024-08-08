@@ -28,6 +28,8 @@ class UserServiceImplTest {
     private BCryptPasswordEncoder passwordEncoder;
     @Mock
     private RecoveryPasswordRepository recoveryPasswordRepository;
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -71,7 +73,12 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() {
+    void updatePasswordUser() {
+        when(passwordEncoder.matches(user.getPassword(), "password")).thenReturn(false);
+
+        userService.updateUser(user, "password");
+
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -102,11 +109,13 @@ class UserServiceImplTest {
 
     @Test
     void resetPasswordForAdmin() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        userService.resetPasswordForAdmin(1L, "new password");
+
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
-    @Test
-    void passwordChangeSuccess() {
-    }
 
     @Test
     void deleteOccurrenceEmailInListReset() {
